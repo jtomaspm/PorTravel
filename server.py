@@ -67,37 +67,37 @@ def index():
 
 #destinos
 @app.route('/destinos')
-def index():
+def destinos():
     return render_template('destinos.html')
 
 #hoteis
 @app.route('/hoteis')
-def index():
+def hoteis():
     return render_template('hoteis.html')
 
 #imoveis
 @app.route('/imoveis')
-def index():
+def imoveis():
     return render_template('imoveis.html')
 
 #transportes
 @app.route('/transportes')
-def index():
+def transportes():
     return render_template('transportes.html')
 
 #carros
 @app.route('/carros')
-def index():
+def carros():
     return render_template('carros.html')
 
 #login
 @app.route('/login')
-def index():
+def login():
     return render_template('login.html')
 
 #register
 @app.route('/register')
-def index():
+def register():
     return render_template('register.html')
 
 
