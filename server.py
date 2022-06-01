@@ -60,13 +60,45 @@ class LoginForm(FlaskForm):
 
 
 
-#Home
+#home
 @app.route('/')
 def index():
     return render_template('index.html')
 
+#destinos
+@app.route('/destinos')
+def index():
+    return render_template('destinos.html')
 
+#hoteis
+@app.route('/hoteis')
+def index():
+    return render_template('hoteis.html')
 
+#imoveis
+@app.route('/imoveis')
+def index():
+    return render_template('imoveis.html')
+
+#transportes
+@app.route('/transportes')
+def index():
+    return render_template('transportes.html')
+
+#carros
+@app.route('/carros')
+def index():
+    return render_template('carros.html')
+
+#login
+@app.route('/login')
+def index():
+    return render_template('login.html')
+
+#register
+@app.route('/register')
+def index():
+    return render_template('register.html')
 
 
 #Start Flask App
