@@ -9,14 +9,14 @@
 		            </div>
 	  				<nav class="tm-nav">
 						<ul>
-							<li><a href="#" {%- if request.path == "/" %} class="active"{% endif %}>Home</a></li>
-							<li><a href="about.html" {%- if request.path == "/destinos" %} class="active"{% endif %}>Destinos</a></li>
-							<li><a href="tours.html" {%- if request.path == "/hoteis" %} class="active"{% endif %}>Hotéis</a></li>
-							<li><a href="tours.html" {%- if request.path == "/imoveis" %} class="active"{% endif %}>Imóveis</a></li>
-							<li><a href="tours.html" {%- if request.path == "/transportes" %} class="active"{% endif %}>Transportes</a></li>
-							<li><a href="tours.html" {%- if request.path == "/carros" %} class="active"{% endif %}>Carros</a></li>
-							<li><a href="contact.html" {%- if request.path == "/login" %} class="active"{% endif %}>Login</a></li>
-							<li><a href="contact.html" {%- if request.path == "/register" %} class="active"{% endif %}>Register</a></li>
+							<li><a href="{{url_for('index')}}" {%- if request.path == "/" %} class="active"{% endif %}>Home</a></li>
+							<li><a href="{{url_for('destinos')}}" {%- if request.path == "/destinos" %} class="active"{% endif %}>Destinos</a></li>
+							<li><a href="{{url_for('hoteis')}}" {%- if request.path == "/hoteis" %} class="active"{% endif %}>Hotéis</a></li>
+							<li><a href="{{url_for('imoveis')}}" {%- if request.path == "/imoveis" %} class="active"{% endif %}>Imóveis</a></li>
+							<li><a href="{{url_for('transportes')}}" {%- if request.path == "/transportes" %} class="active"{% endif %}>Transportes</a></li>
+							<li><a href="{{url_for('carros')}}" {%- if request.path == "/carros" %} class="active"{% endif %}>Carros</a></li>
+							<li><a href="{{url_for('login')}}" {%- if request.path == "/login" %} class="active"{% endif %}>Login</a></li>
+							<li><a href="{{url_for('register')}}" {%- if request.path == "/register" %} class="active"{% endif %}>Register</a></li>
 						</ul>
 					</nav>		
 	  			</div>				
