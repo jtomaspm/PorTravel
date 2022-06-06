@@ -43,7 +43,7 @@ class Hotel(db.Model):
     photos = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Hotel %r>' % self.name
 
 
 class Estate(db.Model):
@@ -57,4 +57,32 @@ class Estate(db.Model):
     photos = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Estate %r>' % self.name + ' from ' + self.owner_username
+
+
+class Transport(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    origin_city = db.Column(db.String(100), nullable=False)
+    origin_country = db.Column(db.String(100), nullable=False)
+    destination_city = db.Column(db.String(100), nullable=False)
+    destination_country = db.Column(db.String(100), nullable=False)
+    company = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    method = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return '<Transport %r>' % self.destination_country+', '+self.destination_city + ' by ' + self.method
+
+
+class Rent_A_Car(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    city = db.Column(db.String(100), nullable=False)
+    country = db.Column(db.String(100), nullable=False)
+    company = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    model = db.Column(db.String(100), nullable=False)
+    brand = db.Column(db.String(100), nullable=False)
+    company = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return '<Rent-A-Car %r>' % self.brand
