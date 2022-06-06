@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, request, redirect
 from flask_bcrypt import Bcrypt
 import json
 from db import db
-from models import User
+from models import User, Destination, Hotel, Estate, Transport, Rent_A_Car
 
 # initial setup
 app = Flask(__name__)
