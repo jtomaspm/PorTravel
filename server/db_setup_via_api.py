@@ -1,3 +1,4 @@
+from unicodedata import name
 from db_setup import restart_db
 import requests
 
@@ -21,38 +22,55 @@ def create_users(amount):
     email = ['john@ua.pt', 'ed@ua.pt', 'psi@ua.pt', 'kyle@ua.pt', 'tim@ua.pt']
     phone = ['961211212', '961211212', '961211212', '961211212', '961212141']
     for i in range(amount):
-        i = str(i)
+        
         data = {
-            'username': usernames[i],
-            'password': 'password',
-            'name': 'name',
-            'address': 'address',
-            'bithdate': 'dd/mm/yyyy',
-            'postal': '1234-123',
-            'city': 'city',
-            'country': 'country',
-            'email': 'email'+i+'@email.com',
-            'phone': '+351 999666333'
+            'username': usernames[i] ,
+            'password': passwords[i] ,
+            'name': names[i],
+            'address': address[i],
+            'bithdate': birthday[i],
+            'postal': postals[i],
+            'city': citys[i],
+            'country': countrys[i],
+            'email': email[i],
+            'phone': phone[i]
         }
         requests.post(url=API_LINK+'user', data=data)
 
 
 def create_hotels(amount):
+    amount = 5 
+    names = ['Axix' , 'Dorals', 'PortoInn', 'Dafcan' , ' Irdalis']
+    citys=['Porto, ' , ' Lisboa ' , ' Guarda' ,' Aveiro' , ' Coimbra']
+    countrys=['Portugal' , 'Portugal' , 'Portugal' , 'Portugal' , 'Portugal'  ]
+    price = ['49.55' , '43.55' , '419.55' , '479.55' , '42.55'  ]
+    persons = [ '1' , '1' , '2' , '2' , '1' ]
+    description = ['Melhor Hotel no Porto', 'Venha para uma noite relaxada','Uma hótima estadia para casais' , ' Venha desfrutar com a sua parceira na melhor noite oferecida pelo Dafcan', 'Irdalis, onde garantimos a sua satisfacão']
+
     for i in range(amount):
-        i = str(i)
+        i2 = str(i)
         data = {
             'name': ''+i,
             'city': ''+i,
             'country': ''+i,
             'price': i,
             'persons': i,
-            'photos': ''+i,
+            'photos': ''+i2,
             'description': i
         }
         requests.post(url=API_LINK+'hotel', data=data)
 
 
 def create_estates(amount):
+    amount = 5 
+    names = ['Axix' , 'Dorals', 'PortoInn', 'Dafcan' , ' Irdalis']
+    owner_username = ['john','ed','psi','kyle','tim']    
+    citys=['Porto, ' , ' Lisboa ' , ' Guarda' ,' Aveiro' , ' Coimbra']
+    countrys=['Portugal' , 'Portugal' , 'Portugal' , 'Portugal' , 'Portugal'  ]
+    price = ['49.55' , '43.55' , '419.55' , '479.55' , '42.55'  ]
+    persons = [ '1' , '1' , '2' , '2' , '1' ]
+    description = ['Melhor Hotel no Porto', 'Venha para uma noite relaxada','Uma hótima estadia para casais' , ' Venha desfrutar com a sua parceira na melhor noite oferecida pelo Dafcan', 'Irdalis, onde garantimos a sua satisfacão']
+
     for i in range(amount):
         i = str(i)
         data = {
