@@ -45,18 +45,19 @@ def create_hotels(amount):
     countrys=['Portugal' , 'Portugal' , 'Portugal' , 'Portugal' , 'Portugal'  ]
     price = ['49.55' , '43.55' , '419.55' , '479.55' , '42.55'  ]
     persons = [ '1' , '1' , '2' , '2' , '1' ]
+    photos = [ '1' , '1' , '2' , '2' , '1' ]
     description = ['Melhor Hotel no Porto', 'Venha para uma noite relaxada','Uma hótima estadia para casais' , ' Venha desfrutar com a sua parceira na melhor noite oferecida pelo Dafcan', 'Irdalis, onde garantimos a sua satisfacão']
 
     for i in range(amount):
         i2 = str(i)
         data = {
-            'name': ''+i,
-            'city': ''+i,
-            'country': ''+i,
-            'price': i,
-            'persons': i,
-            'photos': ''+i2,
-            'description': i
+            'name':names[i],
+            'city':citys[i],
+            'country':countrys[i],
+            'price':price[i],
+            'persons':persons[i],
+            'photos':photos[i], 
+            'description':description[i],
         }
         requests.post(url=API_LINK+'hotel', data=data)
 
@@ -69,19 +70,21 @@ def create_estates(amount):
     countrys=['Portugal' , 'Portugal' , 'Portugal' , 'Portugal' , 'Portugal'  ]
     price = ['49.55' , '43.55' , '419.55' , '479.55' , '42.55'  ]
     persons = [ '1' , '1' , '2' , '2' , '1' ]
+    photos = [ '1' , '1' , '2' , '2' , '1' ]
     description = ['Melhor Hotel no Porto', 'Venha para uma noite relaxada','Uma hótima estadia para casais' , ' Venha desfrutar com a sua parceira na melhor noite oferecida pelo Dafcan', 'Irdalis, onde garantimos a sua satisfacão']
 
     for i in range(amount):
         i = str(i)
         data = {
-            'name': ''+i,
-            'owner_username': ''+i,
-            'city': ''+i,
-            'country': ''+i,
-            'price': i,
-            'persons': i,
-            'description': i,
-            'photos': ''+i
+            
+            'owner_username': owner_username[i],
+            'name':names[i],
+            'city':citys[i],
+            'country':countrys[i],
+            'price':price[i],
+            'persons':persons[i],
+            'photos':photos[i], 
+            'description':description[i],
         }
         requests.post(url=API_LINK+'estate', data=data)
 
