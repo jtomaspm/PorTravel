@@ -36,17 +36,13 @@ class User(db.Model):
 
 class Destination(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    origin_city = db.Column(db.String(100), nullable=False)
-    origin_country = db.Column(db.String(100), nullable=False)
-    destination_city = db.Column(db.String(100), nullable=False)
-    destination_country = db.Column(db.String(100), nullable=False)
-    company = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    package = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=True)
+    table = db.Column(db.String(100), nullable=False)
+    table_id = db.Column(db.Integer, nullable=False)
+    city = db.Column(db.String(100), nullable=False)
+    country = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
-        return '<Destination %r>' % self.destination_country+', '+self.destination_city
+        return '<Destination %r>' % self.country+', '+self.table
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -59,7 +55,7 @@ class Hotel(db.Model):
     country = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     persons = db.Column(db.Integer, nullable=False)
-    photos = db.Column(db.String(100), nullable=False)
+    photos = db.Column(db.String(100), nullable=True)
     description = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
@@ -77,7 +73,7 @@ class Estate(db.Model):
     country = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     persons = db.Column(db.Integer, nullable=False)
-    photos = db.Column(db.String(100), nullable=False)
+    photos = db.Column(db.String(100), nullable=True)
     description = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
@@ -112,6 +108,7 @@ class Rent_A_Car(db.Model):
     company = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     model = db.Column(db.String(100), nullable=False)
+    photos = db.Column(db.String(100), nullable=True)
     description = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
@@ -119,6 +116,23 @@ class Rent_A_Car(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+class Attraction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    country = db.Column(db.String(100), nullable=False)
+    city = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    photos = db.Column(db.String(100), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+
+    def __repr__(self):
+        return '<Attraction %r>' % self.name
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 # home
 
