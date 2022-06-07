@@ -6,10 +6,11 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 import json
+import requests
+from settings import API_LINK
 
 
-
-#initial setup
+# initial setup
 app = Flask(__name__)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -17,19 +18,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'verysecretkeymuchwow123'
 
 
-
-#Login manager
+# Login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-
-#Database classes
+# Database classes
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
@@ -39,11 +39,12 @@ class User(db.Model, UserMixin):
         return '<User %r>' % self.id
 
 
-
-#Form templates
+# Form templates
 class RegisterForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"paceholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"paceholder": "Password"})
+    username = StringField(validators=[InputRequired(), Length(
+        min=1, max=20)], render_kw={"paceholder": "Username"})
+    password = PasswordField(validators=[InputRequired(), Length(
+        min=1, max=20)], render_kw={"paceholder": "Password"})
     submit = SubmitField("Register")
 
     def validate_username(self, username):
@@ -53,54 +54,90 @@ class RegisterForm(FlaskForm):
         if db_usernames:
             raise ValidationError("Username already exists")
 
+
 class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"paceholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"paceholder": "Password"})
+    username = StringField(validators=[InputRequired(), Length(
+        min=1, max=20)], render_kw={"paceholder": "Username"})
+    password = PasswordField(validators=[InputRequired(), Length(
+        min=1, max=20)], render_kw={"paceholder": "Password"})
     submit = SubmitField("Login")
 
 
-
-#home
+# home
 @app.route('/')
 def index():
     return render_template('index.html')
 
-#destinos
+# destinos
+
+
 @app.route('/destinos')
 def destinos():
-    return render_template('destinos.html')
+    destinations = requests.get(url=API_LINK+"destination/").json()
+    print("--------------------------------------------------------------------------destinations")
+    print(destinations)
+    print("--------------------------------------------------------------------------destinations")
+    return render_template('destinos.html', destinations=destinations)
 
-#hoteis
+# hoteis
+
+
 @app.route('/hoteis')
 def hoteis():
-    return render_template('hoteis.html')
+    hotels = requests.get(url=API_LINK+"hotel/").json()
+    print("--------------------------------------------------------------------------hotels")
+    print(hotels)
+    print("--------------------------------------------------------------------------hotels")
+    return render_template('hoteis.html', hotels=hotels)
 
-#imoveis
+# imoveis
+
+
 @app.route('/imoveis')
 def imoveis():
-    return render_template('imoveis.html')
+    estates = requests.get(url=API_LINK+"estate/").json()
+    print("--------------------------------------------------------------------------estates")
+    print(estates)
+    print("--------------------------------------------------------------------------estates")
+    return render_template('imoveis.html', estates=estates)
 
-#transportes
+# transportes
+
+
 @app.route('/transportes')
 def transportes():
-    return render_template('transportes.html')
+    transports = requests.get(url=API_LINK+"transport/").json()
+    print("--------------------------------------------------------------------------transports")
+    print(transports)
+    print("--------------------------------------------------------------------------transports")
+    return render_template('transportes.html', transports=transports)
 
-#carros
+# carros
+
+
 @app.route('/carros')
 def carros():
-    return render_template('carros.html')
+    cars = requests.get(url=API_LINK+"rentacar/").json()
+    print("--------------------------------------------------------------------------cars")
+    print(cars)
+    print("--------------------------------------------------------------------------cars")
+    return render_template('carros.html', cars=cars)
 
-#login
+# login
+
+
 @app.route('/login')
 def login():
     return render_template('login.html')
 
-#register
+# register
+
+
 @app.route('/register')
 def register():
     return render_template('register.html')
 
 
-#Start Flask App
+# Start Flask App
 if __name__ == "__main__":
     app.run(debug=True)

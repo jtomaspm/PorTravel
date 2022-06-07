@@ -168,6 +168,7 @@ def user(username=None):
                     ]
                 }
             return {
+                'id': user.id,
                 'username': user.username,
                 'name': user.name,
                 'address': user.address,
@@ -260,6 +261,7 @@ def user(username=None):
             all_users = User.query.all()
             all_users_json = [
                 {
+                    'id': user.id,
                     'username': user.username,
                     'email': user.email
                 } for user in all_users
