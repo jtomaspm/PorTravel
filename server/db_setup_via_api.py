@@ -6,10 +6,21 @@ API_LINK = 'http://127.0.0.1:4000/'
 
 
 def create_users(amount):
+    amount = 5
+    usernames = ['john','ed','psi','kyle','tim']
+    passwords= ['123','123','123','123','123']
+    names= ['john','ed','psi','kyle','tim']
+    address= ['Travessa da Rua do Eucalipto', 'Travessa da Rua do Eucalipto' , 'Travessa da Rua do Eucalipto' , 'Travessa da Rua do Eucalipto', 'Travessa da Rua do Eucalipto' ]
+    birthday =[ '18/10/1954' , '23/12/1999' , '1/10/1978' , '11/7/2001' , '18/9/1979']
+    postals = [ '6300 - 132' , '6300 - 132' , '6300 - 132' ,'6300 - 132'  , '6300 - 132' ]
+    citys=['Guarda' , 'Guarda' , 'Guarda' , 'Guarda' , 'Guarda' ]
+    countrys=['Portugal','Portugal','Portugal' , 'Portugal ' , 'Portugal']
+    email = ['john@ua.pt','ed@ua.pt','psi@ua.pt','kyle@ua.pt','tim@ua.pt']  
+    phone =['961211212' , '961211212' , '961211212' , '961211212' , '961212141' ]
     for i in range(amount):
         i = str(i)
         data = {
-            'username': 'username'+i,
+            'username': usernames[i],
             'password': 'password',
             'name': 'name',
             'address': 'address',
