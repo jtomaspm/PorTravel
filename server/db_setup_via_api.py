@@ -86,6 +86,8 @@ def create_rent_a_cars(amount):
 
 
 def create_attractions(amount):
+    amount = 5
+    print("test")
     for i in range(amount):
         i = str(i)
         data = {
