@@ -375,12 +375,16 @@ def hotel(id=None):
                     photos=data['photos'],
                     description=data['description']
                 )
+                db.session.add(new_elem)
+                db.session.commit()
                 new_dest = Destination(
                     table='Hotel',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
                 )
+                db.session.add(new_dest)
+                db.session.commit()
             except:
                 return {
                     'errors': [
@@ -388,16 +392,6 @@ def hotel(id=None):
                     ]
                 }
 
-            try:
-                db.session.add(new_elem)
-                db.session.add(new_dest)
-                db.session.commit()
-            except:
-                return {
-                    'errors': [
-                        'unique field already in use'
-                    ]
-                }
             return {
                 'added': new_elem.id
             }
@@ -491,12 +485,16 @@ def estate(id=None):
                     photos=data['photos'],
                     description=data['description']
                 )
+                db.session.add(new_elem)
+                db.session.commit()
                 new_dest = Destination(
                     table='Estate',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
                 )
+                db.session.add(new_dest)
+                db.session.commit()
             except:
                 return {
                     'errors': [
@@ -504,16 +502,6 @@ def estate(id=None):
                     ]
                 }
 
-            try:
-                db.session.add(new_elem)
-                db.session.add(new_dest)
-                db.session.commit()
-            except:
-                return {
-                    'errors': [
-                        'unique field already in use'
-                    ]
-                }
             return {
                 'added': new_elem.id
             }
@@ -607,12 +595,16 @@ def transport(id=None):
                     method=data['method'],
                     description=data['description']
                 )
+                db.session.add(new_elem)
+                db.session.commit()
                 new_dest = Destination(
                     table='Transport',
                     table_id=new_elem.id,
                     city=data['destination_city'],
                     country=data['destination_country']
                 )
+                db.session.add(new_dest)
+                db.session.commit()
             except:
                 return {
                     'errors': [
@@ -620,16 +612,6 @@ def transport(id=None):
                     ]
                 }
 
-            try:
-                db.session.add(new_elem)
-                db.session.add(new_dest)
-                db.session.commit()
-            except:
-                return {
-                    'errors': [
-                        'unique field already in use'
-                    ]
-                }
             return {
                 'added': new_elem.id
             }
@@ -721,12 +703,18 @@ def rent_a_car(id=None):
                     photos=data['photos'],
                     description=data['description']
                 )
+                db.session.add(new_elem)
+                db.session.commit()
+
                 new_dest = Destination(
-                    table='Transport',
+                    table='Rent_A_Car',
                     table_id=new_elem.id,
-                    city=data['destination_city'],
-                    country=data['destination_country']
+                    city=data['city'],
+                    country=data['country']
                 )
+                db.session.add(new_dest)
+                db.session.commit()
+
             except:
                 return {
                     'errors': [
@@ -734,16 +722,6 @@ def rent_a_car(id=None):
                     ]
                 }
 
-            try:
-                db.session.add(new_elem)
-                db.session.add(new_dest)
-                db.session.commit()
-            except:
-                return {
-                    'errors': [
-                        'unique field already in use'
-                    ]
-                }
             return {
                 'added': new_elem.id
             }
@@ -809,7 +787,7 @@ def attraction(id=None):
             if not elem or not elem_dest:
                 return {
                     errors: [
-                        'car not found'
+                        'attraction not found'
                     ]
                 }
             db.session.delete(elem)
@@ -825,35 +803,33 @@ def attraction(id=None):
             new_elem = None
             new_dest = None
             try:
+                print("hello")
                 new_elem = Attraction(
                     city=data['city'],
                     country=data['country'],
-                    company=data['company'],
+                    name=data['name'],
                     price=data['price'],
-                    model=data['model'],
-                    description=data['description']
+                    description=data['description'],
+                    photos=data['photos']
                 )
-                new_dest = Destination(
-                    table='Transport',
-                    table_id=new_elem.id,
-                    city=data['destination_city'],
-                    country=data['destination_country']
-                )
-            except:
-                return {
-                    'errors': [
-                        'invalid attraction information'
-                    ]
-                }
-
-            try:
+                print("hello")
                 db.session.add(new_elem)
+                db.session.commit()
+
+                new_dest = Destination(
+                    table='Attraction',
+                    table_id=new_elem.id,
+                    city=data['city'],
+                    country=data['country']
+                )
+                print("hello")
+
                 db.session.add(new_dest)
                 db.session.commit()
             except:
                 return {
                     'errors': [
-                        'unique field already in use'
+                        'invalid inputs'
                     ]
                 }
             return {
