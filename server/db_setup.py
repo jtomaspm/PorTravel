@@ -110,5 +110,10 @@ def gen_test_db(amount):
     create_rent_a_cars(amount)
 
 
-# restart_db()
-gen_test_db(5)
+# TODO: implement gen_test_db_via_api()
+def gen_test_db_via_api():
+    pass
+
+
+restart_db()
+# gen_test_db(5)

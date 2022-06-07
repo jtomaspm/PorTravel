@@ -271,9 +271,8 @@ def user(username=None):
 
 # destination
 
-
-@app.route('/destination/', methods=["GET", "POST"])
-@app.route('/destination/<id>/', methods=["GET", "PATCH", "DELETE"])
+@app.route('/destination/', methods=["GET"])
+@app.route('/destination/<id>/', methods=["GET"])
 def destination(id=None):
     if not id == None:
         if request.method == "GET":
@@ -286,80 +285,7 @@ def destination(id=None):
                 }
 
             return elem.as_dict()
-
-        if request.method == "PATCH":
-            data = request.form
-            elem = Destination.query.filter(
-                Destination.id == id).first()
-            if not elem:
-                return {
-                    'errors': [
-                        'destination not found'
-                    ]
-                }
-            elem.origin_city = data['origin_city']
-            elem.origin_country = data['origin_country']
-            elem.destination_city = data['destination_city']
-            elem.destination_country = data['destination_country']
-            elem.company = data['company']
-            elem.price = data['price']
-            elem.package = data['package']
-            elem.description = data['description']
-            db.session.commit()
-            return {
-                'updated': id
-            }
-
-        if request.method == "DELETE":
-            elem = Destination.query.filter(
-                Destination.id == id).first()
-            if not elem:
-                return {
-                    errors: [
-                        'destination not found'
-                    ]
-                }
-            db.session.delete(elem)
-            db.session.commit()
-            return {
-                'deleted': id
-            }
-
     else:
-        if request.method == "POST":
-            data = request.form
-            new_elem = None
-            try:
-                new_elem = Destination(
-                    origin_city=data['origin_city'],
-                    origin_country=data['origin_country'],
-                    destination_city=data['destination_city'],
-                    destination_country=data['destination_country'],
-                    company=data['company'],
-                    price=data['price'],
-                    package=data['package'],
-                    description=data['description']
-                )
-            except:
-                return {
-                    'errors': [
-                        'invalid destination information'
-                    ]
-                }
-
-            try:
-                db.session.add(elem)
-                db.session.commit()
-            except:
-                return {
-                    'errors': [
-                        'unique field already in use'
-                    ]
-                }
-            return {
-                'added': elem.id
-            }
-
         if request.method == "GET":
             all_elems = Destination.query.all()
             all_elems_json = [
@@ -376,6 +302,7 @@ def destination(id=None):
 @app.route('/hotel/', methods=["GET", "POST"])
 @app.route('/hotel/<id>/', methods=["GET", "PATCH", "DELETE"])
 def hotel(id=None):
+    # Request with id
     if not id == None:
         if request.method == "GET":
             elem = Hotel.query.filter(Hotel.id == id).first()
@@ -392,7 +319,9 @@ def hotel(id=None):
             data = request.form
             elem = Hotel.query.filter(
                 Hotel.id == id).first()
-            if not elem:
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Hotel').first()
+            if not elem or not elem_dest:
                 return {
                     'errors': [
                         'hotel not found'
@@ -405,6 +334,8 @@ def hotel(id=None):
             elem.persons = data['persons']
             elem.photos = data['photos']
             elem.description = data['description']
+            elem_dest.city = data['city']
+            elem_dest.country = data['country']
             db.session.commit()
             return {
                 'updated': id
@@ -413,6 +344,8 @@ def hotel(id=None):
         if request.method == "DELETE":
             elem = Hotel.query.filter(
                 Hotel.id == id).first()
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Hotel').first()
             if not elem:
                 return {
                     errors: [
@@ -420,15 +353,18 @@ def hotel(id=None):
                     ]
                 }
             db.session.delete(elem)
+            db.session.delete(elem_dest)
             db.session.commit()
             return {
                 'deleted': id
             }
 
+    # request without id
     else:
         if request.method == "POST":
             data = request.form
             new_elem = None
+            new_dest = None
             try:
                 new_elem = Hotel(
                     name=data['name'],
@@ -439,6 +375,12 @@ def hotel(id=None):
                     photos=data['photos'],
                     description=data['description']
                 )
+                new_dest = Destination(
+                    table='Hotel',
+                    table_id=new_elem.id,
+                    city=data['city'],
+                    country=data['country']
+                )
             except:
                 return {
                     'errors': [
@@ -447,7 +389,8 @@ def hotel(id=None):
                 }
 
             try:
-                db.session.add(elem)
+                db.session.add(new_elem)
+                db.session.add(new_dest)
                 db.session.commit()
             except:
                 return {
@@ -456,7 +399,7 @@ def hotel(id=None):
                     ]
                 }
             return {
-                'added': elem.id
+                'added': new_elem.id
             }
 
         if request.method == "GET":
@@ -491,7 +434,9 @@ def estate(id=None):
             data = request.form
             elem = Estate.query.filter(
                 Estate.id == id).first()
-            if not elem:
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Estate').first()
+            if not elem or not elem_dest:
                 return {
                     'errors': [
                         'estate not found'
@@ -505,6 +450,8 @@ def estate(id=None):
             elem.persons = data['persons']
             elem.photos = data['photos']
             elem.description = data['description']
+            elem_dest.city = data['city']
+            elem_dest.country = data['country']
             db.session.commit()
             return {
                 'updated': id
@@ -513,13 +460,16 @@ def estate(id=None):
         if request.method == "DELETE":
             elem = Estate.query.filter(
                 Estate.id == id).first()
-            if not elem:
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Estate').first()
+            if not elem or not elem_dest:
                 return {
                     errors: [
                         'estate not found'
                     ]
                 }
             db.session.delete(elem)
+            db.session.delete(elem_dest)
             db.session.commit()
             return {
                 'deleted': id
@@ -529,6 +479,7 @@ def estate(id=None):
         if request.method == "POST":
             data = request.form
             new_elem = None
+            new_dest = None
             try:
                 new_elem = Estate(
                     name=data['name'],
@@ -540,6 +491,12 @@ def estate(id=None):
                     photos=data['photos'],
                     description=data['description']
                 )
+                new_dest = Destination(
+                    table='Estate',
+                    table_id=new_elem.id,
+                    city=data['city'],
+                    country=data['country']
+                )
             except:
                 return {
                     'errors': [
@@ -548,7 +505,8 @@ def estate(id=None):
                 }
 
             try:
-                db.session.add(elem)
+                db.session.add(new_elem)
+                db.session.add(new_dest)
                 db.session.commit()
             except:
                 return {
@@ -557,7 +515,7 @@ def estate(id=None):
                     ]
                 }
             return {
-                'added': elem.id
+                'added': new_elem.id
             }
 
         if request.method == "GET":
@@ -592,7 +550,9 @@ def transport(id=None):
             data = request.form
             elem = Transport.query.filter(
                 Transport.id == id).first()
-            if not elem:
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Transport').first()
+            if not elem or not elem_dest:
                 return {
                     'errors': [
                         'transport not found'
@@ -606,6 +566,8 @@ def transport(id=None):
             elem.price = data['price']
             elem.method = data['method']
             elem.description = data['description']
+            elem_dest.city = data['destination_city']
+            elem_dest.country = data['destination_country']
             db.session.commit()
             return {
                 'updated': id
@@ -614,13 +576,16 @@ def transport(id=None):
         if request.method == "DELETE":
             elem = Transport.query.filter(
                 Transport.id == id).first()
-            if not elem:
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Transport').first()
+            if not elem or not elem_dest:
                 return {
                     errors: [
                         'transport not found'
                     ]
                 }
             db.session.delete(elem)
+            db.session.delete(elem_dest)
             db.session.commit()
             return {
                 'deleted': id
@@ -630,6 +595,7 @@ def transport(id=None):
         if request.method == "POST":
             data = request.form
             new_elem = None
+            new_dest = None
             try:
                 new_elem = Transport(
                     origin_city=data['origin_city'],
@@ -641,6 +607,12 @@ def transport(id=None):
                     method=data['method'],
                     description=data['description']
                 )
+                new_dest = Destination(
+                    table='Transport',
+                    table_id=new_elem.id,
+                    city=data['destination_city'],
+                    country=data['destination_country']
+                )
             except:
                 return {
                     'errors': [
@@ -649,7 +621,8 @@ def transport(id=None):
                 }
 
             try:
-                db.session.add(elem)
+                db.session.add(new_elem)
+                db.session.add(new_dest)
                 db.session.commit()
             except:
                 return {
@@ -658,7 +631,7 @@ def transport(id=None):
                     ]
                 }
             return {
-                'added': elem.id
+                'added': new_elem.id
             }
 
         if request.method == "GET":
@@ -693,7 +666,9 @@ def rent_a_car(id=None):
             data = request.form
             elem = Rent_A_Car.query.filter(
                 Rent_A_Car.id == id).first()
-            if not elem:
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Rent_A_Car').first()
+            if not elem or not elem_dest:
                 return {
                     'errors': [
                         'car not found'
@@ -704,7 +679,10 @@ def rent_a_car(id=None):
             elem.company = data['company']
             elem.price = data['price']
             elem.model = data['model']
+            elem.photos = data['photos']
             elem.description = data['description']
+            elem_dest.city = data['city']
+            elem_dest.country = data['country']
             db.session.commit()
             return {
                 'updated': id
@@ -713,13 +691,16 @@ def rent_a_car(id=None):
         if request.method == "DELETE":
             elem = Rent_A_Car.query.filter(
                 Rent_A_Car.id == id).first()
-            if not elem:
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Rent_A_Car').first()
+            if not elem or not elem_dest:
                 return {
                     errors: [
                         'car not found'
                     ]
                 }
             db.session.delete(elem)
+            db.session.delete(elem_dest)
             db.session.commit()
             return {
                 'deleted': id
@@ -729,6 +710,7 @@ def rent_a_car(id=None):
         if request.method == "POST":
             data = request.form
             new_elem = None
+            new_dest = None
             try:
                 new_elem = Rent_A_Car(
                     city=data['city'],
@@ -736,7 +718,14 @@ def rent_a_car(id=None):
                     company=data['company'],
                     price=data['price'],
                     model=data['model'],
+                    photos=data['photos'],
                     description=data['description']
+                )
+                new_dest = Destination(
+                    table='Transport',
+                    table_id=new_elem.id,
+                    city=data['destination_city'],
+                    country=data['destination_country']
                 )
             except:
                 return {
@@ -746,7 +735,8 @@ def rent_a_car(id=None):
                 }
 
             try:
-                db.session.add(elem)
+                db.session.add(new_elem)
+                db.session.add(new_dest)
                 db.session.commit()
             except:
                 return {
@@ -755,7 +745,7 @@ def rent_a_car(id=None):
                     ]
                 }
             return {
-                'added': elem.id
+                'added': new_elem.id
             }
 
         if request.method == "GET":
@@ -766,6 +756,118 @@ def rent_a_car(id=None):
             return json.dumps(all_elems_json)
 
     return "Hello from Rent a Car Page"
+
+
+# attraction
+
+
+@app.route('/attraction/', methods=["GET", "POST"])
+@app.route('/attraction/<id>/', methods=["GET", "PATCH", "DELETE"])
+def attraction(id=None):
+    if not id == None:
+        if request.method == "GET":
+            elem = Attraction.query.filter(Attraction.id == id).first()
+            if not elem:
+                return {
+                    'errors': [
+                        'attraction not found'
+                    ]
+                }
+
+            return elem.as_dict()
+
+        if request.method == "PATCH":
+            data = request.form
+            elem = Attraction.query.filter(
+                Attraction.id == id).first()
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Attraction').first()
+            if not elem or not elem_dest:
+                return {
+                    'errors': [
+                        'attraction not found'
+                    ]
+                }
+            elem.city = data['city']
+            elem.country = data['country']
+            elem.name = data['name']
+            elem.price = data['price']
+            elem.description = data['description']
+            elem.photos = data['photos']
+            elem_dest.city = data['city']
+            elem_dest.country = data['country']
+            db.session.commit()
+            return {
+                'updated': id
+            }
+
+        if request.method == "DELETE":
+            elem = Attraction.query.filter(
+                Attraction.id == id).first()
+            elem_dest = Destination.query.filter(
+                Destination.table_id == id, Destination.table == 'Attraction').first()
+            if not elem or not elem_dest:
+                return {
+                    errors: [
+                        'car not found'
+                    ]
+                }
+            db.session.delete(elem)
+            db.session.delete(elem_dest)
+            db.session.commit()
+            return {
+                'deleted': id
+            }
+
+    else:
+        if request.method == "POST":
+            data = request.form
+            new_elem = None
+            new_dest = None
+            try:
+                new_elem = Attraction(
+                    city=data['city'],
+                    country=data['country'],
+                    company=data['company'],
+                    price=data['price'],
+                    model=data['model'],
+                    description=data['description']
+                )
+                new_dest = Destination(
+                    table='Transport',
+                    table_id=new_elem.id,
+                    city=data['destination_city'],
+                    country=data['destination_country']
+                )
+            except:
+                return {
+                    'errors': [
+                        'invalid attraction information'
+                    ]
+                }
+
+            try:
+                db.session.add(new_elem)
+                db.session.add(new_dest)
+                db.session.commit()
+            except:
+                return {
+                    'errors': [
+                        'unique field already in use'
+                    ]
+                }
+            return {
+                'added': new_elem.id
+            }
+
+        if request.method == "GET":
+            all_elems = Attraction.query.all()
+            all_elems_json = [
+                elem.as_dict() for elem in all_elems
+            ]
+            return json.dumps(all_elems_json)
+
+    return "Hello from Attraction Page"
 
 
 # Start Flask App
