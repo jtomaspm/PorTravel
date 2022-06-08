@@ -223,26 +223,28 @@ def user(username=None):
     else:
         if request.method == "POST":
             data = request.form
+            print("--------------------------FORM DATA-----------------------")
+            print(data)
             new_user = None
-            try:
-                new_user = User(
-                    username=data['username'],
-                    password=data['password'],
-                    name=data['name'],
-                    address=data['address'],
-                    bithdate=data['bithdate'],
-                    postal=data['postal'],
-                    city=data['city'],
-                    country=data['country'],
-                    email=data['email'],
-                    phone=data['phone']
-                )
-            except:
-                return {
-                    'errors': [
-                        'invalid user information'
-                    ]
-                }
+            # try:
+            new_user = User(
+                username=data['username'],
+                password=data['password'],
+                name=data['name'],
+                address=data['address'],
+                bithdate=data['bithdate'],
+                postal=data['postal'],
+                city=data['city'],
+                country=data['country'],
+                email=data['email'],
+                phone=data['phone']
+            )
+            # except:
+            #     return {
+            #         'errors': [
+            #             'invalid user information'
+            #         ]
+            #     }
 
             try:
                 db.session.add(new_user)
@@ -805,7 +807,6 @@ def attraction(id=None):
             new_elem = None
             new_dest = None
             try:
-                print("hello")
                 new_elem = Attraction(
                     city=data['city'],
                     country=data['country'],

@@ -1,13 +1,11 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 import json
 import requests
 from settings import API_LINK
+from user import User
 
 
 # initial setup
@@ -27,40 +25,6 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-
-# Database classes
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), nullable=False, unique=True)
-    password = db.Column(db.String(80), nullable=False)
-
-    def __repr__(self):
-        return '<User %r>' % self.id
-
-
-# Form templates
-class RegisterForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(
-        min=1, max=20)], render_kw={"paceholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(
-        min=1, max=20)], render_kw={"paceholder": "Password"})
-    submit = SubmitField("Register")
-
-    def validate_username(self, username):
-        db_usernames = User.query.filter_by(
-            username=username.data
-        ).first()
-        if db_usernames:
-            raise ValidationError("Username already exists")
-
-
-class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(
-        min=1, max=20)], render_kw={"paceholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(
-        min=1, max=20)], render_kw={"paceholder": "Password"})
-    submit = SubmitField("Login")
 
 
 # home
@@ -126,15 +90,25 @@ def carros():
 # login
 
 
-@app.route('/login')
-def login():
+@app.route('/login', methods=["GET", "POST"])
+def login(username=None, password=None):
+    if request.method == "POST":
+        data = request.form
+        r = requests.post(url=API_LINK+"user/"+data["username"], data=data)
+        return r.json()
+
     return render_template('login.html')
 
 # register
 
 
-@app.route('/register')
+@app.route('/register', methods=["GET", "POST"])
 def register():
+    if request.method == "POST":
+        data = request.form
+        r = requests.post(url=API_LINK+"user/", data=data)
+        print(data)
+        return r.json()
     return render_template('register.html')
 
 
