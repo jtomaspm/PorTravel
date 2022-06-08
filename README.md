@@ -9,7 +9,7 @@
 
     - frontend for website
 
-## scripts:
+## Scripts:
 
     - Bash scripts for auto starting
 
