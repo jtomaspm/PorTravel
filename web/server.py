@@ -1,17 +1,14 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_bcrypt import Bcrypt
 import json
 import requests
 from settings import API_LINK
-from user import User
 
 
 # initial setup
 app = Flask(__name__)
 db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'verysecretkeymuchwow123'
 
@@ -27,10 +24,26 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, unique=True)
+    username = db.Column(db.String(100), nullable=False, unique=True)
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
+    def __init__(self, user_id, username):
+        self.user_id = user_id
+        self.username = username
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
 # home
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', current_user=current_user)
 
 # destinos
 
@@ -41,7 +54,7 @@ def destinos():
     print("--------------------------------------------------------------------------destinations")
     print(destinations)
     print("--------------------------------------------------------------------------destinations")
-    return render_template('destinos.html', destinations=destinations)
+    return render_template('destinos.html', destinations=destinations, current_user=current_user)
 
 # hoteis
 
@@ -52,7 +65,7 @@ def hoteis():
     print("--------------------------------------------------------------------------hotels")
     print(hotels)
     print("--------------------------------------------------------------------------hotels")
-    return render_template('hoteis.html', hotels=hotels)
+    return render_template('hoteis.html', hotels=hotels, current_user=current_user)
 
 # imoveis
 
@@ -63,7 +76,7 @@ def imoveis():
     print("--------------------------------------------------------------------------estates")
     print(estates)
     print("--------------------------------------------------------------------------estates")
-    return render_template('imoveis.html', estates=estates)
+    return render_template('imoveis.html', estates=estates, current_user=current_user)
 
 # transportes
 
@@ -74,7 +87,7 @@ def transportes():
     print("--------------------------------------------------------------------------transports")
     print(transports)
     print("--------------------------------------------------------------------------transports")
-    return render_template('transportes.html', transports=transports)
+    return render_template('transportes.html', transports=transports, current_user=current_user)
 
 # carros
 
@@ -85,7 +98,7 @@ def carros():
     print("--------------------------------------------------------------------------cars")
     print(cars)
     print("--------------------------------------------------------------------------cars")
-    return render_template('carros.html', cars=cars)
+    return render_template('carros.html', cars=cars, current_user=current_user)
 
 # login
 
@@ -95,21 +108,48 @@ def login(username=None, password=None):
     if request.method == "POST":
         data = request.form
         r = requests.post(url=API_LINK+"user/"+data["username"], data=data)
-        return r.json()
+        if r.json()["verified"]:
+            query = User.query.filter(
+                User.username == data['username']).first()
+            if query:
+                user = query
+            else:
+                user_json = requests.get(
+                    API_LINK+'user/'+data['username']).json()
+                user = User(user_id=user_json['id'], username=data['username'])
+                db.session.add(user)
+                db.session.commit()
+            login_user(user)
+            print("____________________________________________LOGED IN ", current_user)
+        return redirect(url_for('index'))
 
-    return render_template('login.html')
+    return render_template('login.html', current_user=current_user)
+
+
+@login_required
+@app.route('/logout', methods=["GET"])
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
+@login_required
+@app.route('/profile', methods=["GET"])
+def profile():
+    return render_template('profile.html', current_user=current_user)
+
 
 # register
 
 
-@app.route('/register', methods=["GET", "POST"])
+@ app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         data = request.form
         r = requests.post(url=API_LINK+"user/", data=data)
         print(data)
         return r.json()
-    return render_template('register.html')
+    return render_template('register.html', current_user=current_user)
 
 
 # Start Flask App
