@@ -1,9 +1,23 @@
 from unicodedata import name
 from db_setup import restart_db
 import requests
+from os import listdir
+from os.path import isfile, join
+from server import db, Image
 
 
 API_LINK = 'http://127.0.0.1:4000/'
+
+
+def create_images():
+    mypath = 'static/img/'
+    files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    for file in files:
+        img = Image(
+            path=file
+        )
+        db.session.add(img)
+    db.session.commit()
 
 
 def create_users(amount):
@@ -45,7 +59,7 @@ def create_hotels(amount):
     countrys = ['Portugal', 'Portugal', 'Portugal', 'Portugal', 'Portugal']
     price = ['49.55', '43.55', '419.55', '479.55', '42.55']
     persons = ['1', '1', '2', '2', '1']
-    photos = ['1', '1', '2', '2', '1']
+    photos = ['1', '2', '3', '4', '5']
     description = ['Melhor Hotel no Porto', 'Venha para uma noite relaxada', 'Uma hótima estadia para casais',
                    ' Venha desfrutar com a sua parceira na melhor noite oferecida pelo Dafcan', 'Irdalis, onde garantimos a sua satisfacão']
 
@@ -70,7 +84,7 @@ def create_estates(amount):
     countrys = ['Portugal', 'Portugal', 'Portugal', 'Portugal', 'Portugal']
     price = ['49.55', '43.55', '419.55', '479.55', '42.55']
     persons = ['1', '1', '2', '2', '1']
-    photos = ['1', '1', '2', '2', '1']
+    photos = ['6', '7', '8', '9', '10']
     description = ['Melhor Hotel no Porto', 'Venha para uma noite relaxada', 'Uma hótima estadia para casais',
                    ' Venha desfrutar com a sua parceira na melhor noite oferecida pelo Dafcan', 'Irdalis, onde garantimos a sua satisfacão']
 
@@ -98,7 +112,7 @@ def create_transports(amount):
     destination_country = ["Espanha", "Espanha",
                            "Espanha", "Espanha", "Espanha"]
     company = ["UA", "UA", "UA", "UA", "UA"]
-    price = ["2", "2", "2", "2", "2"]
+    price = ["11", "12", "13", "14", "15"]
     description = ["qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja",
                    "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja"]
     method = ["Airplane", "Airplane", "Space Ship", "Bus", "Train"]
@@ -121,11 +135,11 @@ def create_rent_a_cars(amount):
     countries = ["Portugal", "Portugal", "Portugal", "Portugal", "Portugal"]
     cities = ["Porto", "Aveiro", "Algarve", "Aveiro", "Lisboa"]
     companies = ["UA", "UA", "UA", "UA", "UA"]
-    prices = ["10", "15", "5", "3", "0"]
+    prices = ["10", "15", "16", "17", "18"]
     models = ["Audi", "BMW", "Renault", "Porshe", "Lamborghini"]
     description = ["qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja",
                    "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja"]
-    photos = ["2", "2", "2", "2", "2"]
+    photos = ["19", "21", "22", "23", "24"]
     for i in range(amount):
         data = {
             'city': cities[i],
@@ -148,7 +162,7 @@ def create_attractions(amount):
     prices = ["10", "15", "5", "3", "0"]
     description = ["qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja",
                    "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja"]
-    photos = ["2", "2", "2", "2", "2"]
+    photos = ["25", "26", "27", "28", "29"]
     for i in range(amount):
         data = {
             'name': names[i],
@@ -169,6 +183,7 @@ def gen_test_db(amount):
     create_estates(amount)
     create_transports(amount)
     create_rent_a_cars(amount)
+    create_images()
 
 
 gen_test_db(5)

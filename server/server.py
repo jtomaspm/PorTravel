@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, jsonify
+from flask import Flask, render_template, url_for, request, redirect, jsonify, send_file
 from flask_bcrypt import Bcrypt
 import json
 from flask_sqlalchemy import SQLAlchemy
@@ -129,6 +129,17 @@ class Attraction(db.Model):
 
     def __repr__(self):
         return '<Attraction %r>' % self.name
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(100), nullable=False, unique=True)
+
+    def __repr__(self):
+        return '<Image %r>' % self.path
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -847,6 +858,12 @@ def attraction(id=None):
             return json.dumps(all_elems_json)
 
     return "Hello from Attraction Page"
+
+
+@app.route('/image/<id>')
+def image(id=None):
+    img = Image.query.filter(Image.id == id).first()
+    return send_file('static/img/'+img.path)
 
 
 # Start Flask App

@@ -43,7 +43,7 @@ class User(db.Model, UserMixin):
 # home
 @app.route('/')
 def index():
-    return render_template('index.html', current_user=current_user)
+    return render_template('index.html', current_user=current_user, API_LINK=API_LINK)
 
 # destinos
 
@@ -54,7 +54,7 @@ def destinos():
     print("--------------------------------------------------------------------------destinations")
     print(destinations)
     print("--------------------------------------------------------------------------destinations")
-    return render_template('destinos.html', destinations=destinations, current_user=current_user)
+    return render_template('destinos.html', destinations=destinations, current_user=current_user, API_LINK=API_LINK)
 
 # hoteis
 
@@ -65,7 +65,7 @@ def hoteis():
     print("--------------------------------------------------------------------------hotels")
     print(hotels)
     print("--------------------------------------------------------------------------hotels")
-    return render_template('hoteis.html', hotels=hotels, current_user=current_user)
+    return render_template('hoteis.html', hotels=hotels, current_user=current_user, API_LINK=API_LINK)
 
 # imoveis
 
@@ -76,7 +76,7 @@ def imoveis():
     print("--------------------------------------------------------------------------estates")
     print(estates)
     print("--------------------------------------------------------------------------estates")
-    return render_template('imoveis.html', estates=estates, current_user=current_user)
+    return render_template('imoveis.html', estates=estates, current_user=current_user, API_LINK=API_LINK)
 
 # transportes
 
@@ -87,7 +87,7 @@ def transportes():
     print("--------------------------------------------------------------------------transports")
     print(transports)
     print("--------------------------------------------------------------------------transports")
-    return render_template('transportes.html', transports=transports, current_user=current_user)
+    return render_template('transportes.html', transports=transports, current_user=current_user, API_LINK=API_LINK)
 
 # carros
 
@@ -98,7 +98,7 @@ def carros():
     print("--------------------------------------------------------------------------cars")
     print(cars)
     print("--------------------------------------------------------------------------cars")
-    return render_template('carros.html', cars=cars, current_user=current_user)
+    return render_template('carros.html', cars=cars, current_user=current_user, API_LINK=API_LINK)
 
 # login
 
@@ -121,9 +121,9 @@ def login(username=None, password=None):
                 db.session.commit()
             login_user(user)
             print("____________________________________________LOGED IN ", current_user)
-        return redirect(url_for('index'))
+            return redirect(url_for('index'))
 
-    return render_template('login.html', current_user=current_user)
+    return render_template('login.html', current_user=current_user, API_LINK=API_LINK)
 
 
 @login_required
@@ -136,7 +136,7 @@ def logout():
 @login_required
 @app.route('/profile', methods=["GET"])
 def profile():
-    return render_template('profile.html', current_user=current_user)
+    return render_template('profile.html', current_user=current_user, API_LINK=API_LINK)
 
 
 # register
@@ -149,7 +149,7 @@ def register():
         r = requests.post(url=API_LINK+"user/", data=data)
         print(data)
         return r.json()
-    return render_template('register.html', current_user=current_user)
+    return render_template('register.html', current_user=current_user, API_LINK=API_LINK)
 
 
 # Start Flask App
