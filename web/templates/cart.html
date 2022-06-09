@@ -18,6 +18,52 @@
 					<div class="col-lg-4 col-md-6 col-sm-6"><h2 class="tm-section-title">Carrinho</h2></div>
 					<div class="col-lg-4 col-md-3 col-sm-3"><hr></div>	
 				</div>
+			</div>
+			<div class="row">
+				{% for details in carts %}
+				<div class="row" style="background-color: rgb(237, 242, 214); padding-top: 20px; padding-bottom: 20px; margin-bottom: 30px;">
+					<div class="col-sm-3">
+						<br>
+						{% if details['name'] %}
+							<h1>{{details['name']}}</h1><br>
+						{% endif %}
+						{% if details['model'] %}
+							<h1>{{details['model']}}</h1><br>
+						{% endif %}
+						{% if details['method'] %}
+							<h1>{{details['method']}}</h1><br>
+						{% endif %}
+						{% if details['company'] %}
+							<h5>{{details['company']}}</h5><br>
+						{% endif %}
+						<p>{% if details['city'] %}{{details['city']}}{% endif %}{% if details['country'] %},{{details['country']}}{% endif %}</p>
+						<p>{% if details['origin_city'] %}De: {{details['origin_city']}}{% endif %}{% if details['origin_country'] %},{{details['origin_country']}}{% endif %}</p>
+						<p>{% if details['destination_city'] %}Para: {{details['destination_city']}}{% endif %}{% if details['destination_country'] %},{{details['destination_country']}}{% endif %}</p>
+						<p>{% if details['owner_username'] %}De: {{details['owner_username']}}{% endif %}</p>
+						<br>
+						{% if details['price'] %}
+							<h3>{{details['price']}}€</h3> 
+						{% endif %}
+						{% if details['persons'] %}
+						<br>
+							<h4>🧑 {{details['persons']}} </h4> 
+						{% endif %}
+					</div>
+					<div class="col-sm-5">
+						{% if details['photos'] %}
+						
+							<img src="{{ API_LINK + '/image/' + details['photos'] }}" alt="image" class="img-responsive" style="width: 500px;">
+						{% endif %}
+					</div>
+					
+					<div class="col-sm-4">
+						{% if details['description'] %}
+						<br>
+							<p>{{details['description']}}</p>
+						{% endif %}
+					</div>
+				</div>
+				{% endfor %}
 			</div>		
 		</div>
 	</section>

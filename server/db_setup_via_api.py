@@ -55,7 +55,7 @@ def create_users(amount):
 def create_hotels(amount):
     amount = 5
     names = ['Axix', 'Dorals', 'PortoInn', 'Dafcan', ' Irdalis']
-    citys = ['Porto, ', ' Lisboa ', ' Guarda', ' Aveiro', ' Coimbra']
+    citys = ['Porto ', ' Lisboa ', ' Guarda', ' Aveiro', ' Coimbra']
     countrys = ['Portugal', 'Portugal', 'Portugal', 'Portugal', 'Portugal']
     price = ['49.55', '43.55', '419.55', '479.55', '42.55']
     persons = ['1', '1', '2', '2', '1']

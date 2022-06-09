@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 import json
@@ -41,7 +41,56 @@ class User(db.Model, UserMixin):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
+class Cart(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    item_id = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return '<Cart %r>' % self.username
+
+    def __init__(self, item_id, username):
+        self.item_id = item_id
+        self.username = username
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+@login_required
+@app.route('/addtocart/<id>')
+def addtocart(id=None):
+    cart = Cart(
+        item_id=id,
+        username=current_user.username
+    )
+    db.session.add(cart)
+    db.session.commit()
+    if 'url' in session:
+        return redirect(session['url'])
+    return redirect(url_for('cart'))
+
+
+@login_required
+@app.route('/removefromcart')
+@app.route('/removefromcart/<id>')
+def removefromcart(id=None):
+    if id:
+        cart = Cart.query.filter(
+            Cart.username == current_user.username, Cart.item_id == id).first()
+        db.session.delete(cart)
+        db.session.commit()
+    else:
+        for cart in Cart.query.filter(Cart.username == current_user.username).all():
+            db.session.delete(cart)
+        db.session.commit()
+    if 'url' in session:
+        return redirect(session['url'])
+    return redirect(url_for('cart'))
+
 # home
+
+
 @app.route('/')
 def index():
     destinations = requests.get(url=API_LINK+'attraction').json()
@@ -125,7 +174,7 @@ def details(id=None):
     item = requests.get(url=API_LINK+'destination/'+id).json()
     item_details = requests.get(
         url=API_LINK+item["table"]+'/'+str(item["table_id"])).json()
-    return render_template('details.html', current_user=current_user, API_LINK=API_LINK, details=item_details, table=item['table'])
+    return render_template('details.html', current_user=current_user, API_LINK=API_LINK, details=item_details, table=item['table'], id=id)
 
 
 # login
@@ -170,7 +219,14 @@ def profile():
 @login_required
 @app.route('/cart', methods=["GET"])
 def cart():
-    return render_template('cart.html', current_user=current_user, API_LINK=API_LINK)
+    carts = []
+    querry = Cart.query.filter(Cart.username == current_user.username).all()
+    for item in querry:
+        destination = requests.get(
+            url=API_LINK+'destination/'+str(item.item_id)).json()
+        carts.append(requests.get(
+            url=API_LINK+destination['table']+'/'+str(destination['table_id'])).json())
+    return render_template('cart.html', current_user=current_user, API_LINK=API_LINK, carts=carts)
 
 
 # register
