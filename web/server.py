@@ -4,6 +4,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 import json
 import requests
 from settings import API_LINK
+from functions import get_destination_id
 
 
 # initial setup
@@ -43,7 +44,8 @@ class User(db.Model, UserMixin):
 # home
 @app.route('/')
 def index():
-    return render_template('index.html', current_user=current_user, API_LINK=API_LINK)
+    destinations = requests.get(url=API_LINK+'attraction').json()
+    return render_template('index.html', destinations=destinations, current_user=current_user, API_LINK=API_LINK)
 
 # destinos
 
@@ -69,6 +71,8 @@ def destinos():
 @app.route('/hoteis')
 def hoteis():
     hotels = requests.get(url=API_LINK+"hotel/").json()
+    for hotel in hotels:
+        hotel['details_id'] = get_destination_id(hotel, 'hotel')
     print("--------------------------------------------------------------------------hotels")
     print(hotels)
     print("--------------------------------------------------------------------------hotels")
@@ -80,6 +84,8 @@ def hoteis():
 @app.route('/imoveis')
 def imoveis():
     estates = requests.get(url=API_LINK+"estate/").json()
+    for item in estates:
+        item['details_id'] = get_destination_id(item, 'estate')
     print("--------------------------------------------------------------------------estates")
     print(estates)
     print("--------------------------------------------------------------------------estates")
@@ -91,6 +97,8 @@ def imoveis():
 @app.route('/transportes')
 def transportes():
     transports = requests.get(url=API_LINK+"transport/").json()
+    for item in transports:
+        item['details_id'] = get_destination_id(item, 'transport')
     print("--------------------------------------------------------------------------transports")
     print(transports)
     print("--------------------------------------------------------------------------transports")
@@ -102,6 +110,8 @@ def transportes():
 @app.route('/carros')
 def carros():
     cars = requests.get(url=API_LINK+"rentacar/").json()
+    for item in cars:
+        item['details_id'] = get_destination_id(item, 'rentacar')
     print("--------------------------------------------------------------------------cars")
     print(cars)
     print("--------------------------------------------------------------------------cars")
