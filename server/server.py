@@ -92,6 +92,7 @@ class Transport(db.Model):
     company = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     method = db.Column(db.String(100), nullable=False)
+    photos = db.Column(db.String(100), nullable=True)
     description = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
@@ -335,7 +336,7 @@ def hotel(id=None):
             elem = Hotel.query.filter(
                 Hotel.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Hotel').first()
+                Destination.table_id == id, Destination.table == 'hotel').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -360,7 +361,7 @@ def hotel(id=None):
             elem = Hotel.query.filter(
                 Hotel.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Hotel').first()
+                Destination.table_id == id, Destination.table == 'hotel').first()
             if not elem:
                 return {
                     errors: [
@@ -393,7 +394,7 @@ def hotel(id=None):
                 db.session.add(new_elem)
                 db.session.commit()
                 new_dest = Destination(
-                    table='Hotel',
+                    table='hotel',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
@@ -444,7 +445,7 @@ def estate(id=None):
             elem = Estate.query.filter(
                 Estate.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Estate').first()
+                Destination.table_id == id, Destination.table == 'estate').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -470,7 +471,7 @@ def estate(id=None):
             elem = Estate.query.filter(
                 Estate.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Estate').first()
+                Destination.table_id == id, Destination.table == 'estate').first()
             if not elem or not elem_dest:
                 return {
                     errors: [
@@ -503,7 +504,7 @@ def estate(id=None):
                 db.session.add(new_elem)
                 db.session.commit()
                 new_dest = Destination(
-                    table='Estate',
+                    table='estate',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
@@ -554,7 +555,7 @@ def transport(id=None):
             elem = Transport.query.filter(
                 Transport.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Transport').first()
+                Destination.table_id == id, Destination.table == 'transport').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -568,6 +569,7 @@ def transport(id=None):
             elem.company = data['company']
             elem.price = data['price']
             elem.method = data['method']
+            elem.photos = data['photos']
             elem.description = data['description']
             elem_dest.city = data['destination_city']
             elem_dest.country = data['destination_country']
@@ -580,7 +582,7 @@ def transport(id=None):
             elem = Transport.query.filter(
                 Transport.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Transport').first()
+                Destination.table_id == id, Destination.table == 'transport').first()
             if not elem or not elem_dest:
                 return {
                     errors: [
@@ -608,12 +610,13 @@ def transport(id=None):
                     company=data['company'],
                     price=data['price'],
                     method=data['method'],
+                    photos=data['photos'],
                     description=data['description']
                 )
                 db.session.add(new_elem)
                 db.session.commit()
                 new_dest = Destination(
-                    table='Transport',
+                    table='transport',
                     table_id=new_elem.id,
                     city=data['destination_city'],
                     country=data['destination_country']
@@ -664,7 +667,7 @@ def rent_a_car(id=None):
             elem = Rent_A_Car.query.filter(
                 Rent_A_Car.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Rent_A_Car').first()
+                Destination.table_id == id, Destination.table == 'rentacar').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -689,7 +692,7 @@ def rent_a_car(id=None):
             elem = Rent_A_Car.query.filter(
                 Rent_A_Car.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Rent_A_Car').first()
+                Destination.table_id == id, Destination.table == 'rentacar').first()
             if not elem or not elem_dest:
                 return {
                     errors: [
@@ -722,7 +725,7 @@ def rent_a_car(id=None):
                 db.session.commit()
 
                 new_dest = Destination(
-                    table='Rent_A_Car',
+                    table='rentacar',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
@@ -774,7 +777,7 @@ def attraction(id=None):
             elem = Attraction.query.filter(
                 Attraction.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Attraction').first()
+                Destination.table_id == id, Destination.table == 'attraction').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -798,7 +801,7 @@ def attraction(id=None):
             elem = Attraction.query.filter(
                 Attraction.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Attraction').first()
+                Destination.table_id == id, Destination.table == 'attraction').first()
             if not elem or not elem_dest:
                 return {
                     errors: [
@@ -831,7 +834,7 @@ def attraction(id=None):
                 db.session.commit()
 
                 new_dest = Destination(
-                    table='Attraction',
+                    table='attraction',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']

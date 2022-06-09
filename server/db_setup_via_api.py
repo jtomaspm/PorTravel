@@ -113,6 +113,7 @@ def create_transports(amount):
                            "Espanha", "Espanha", "Espanha"]
     company = ["UA", "UA", "UA", "UA", "UA"]
     price = ["11", "12", "13", "14", "15"]
+    photos = ['6', '7', '8', '9', '10']
     description = ["qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja",
                    "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja", "qpwjidpoqwjphfwehpofiaj fjads fadsp+jf a jdf+jdasifja"]
     method = ["Airplane", "Airplane", "Space Ship", "Bus", "Train"]
@@ -124,6 +125,7 @@ def create_transports(amount):
             'destination_country': destination_country[i],
             'company': company[i],
             'price': price[i],
+            'photos': photos[i],
             'description': description[i],
             'method': method[i]
 

@@ -54,7 +54,14 @@ def destinos():
     print("--------------------------------------------------------------------------destinations")
     print(destinations)
     print("--------------------------------------------------------------------------destinations")
-    return render_template('destinos.html', destinations=destinations, current_user=current_user, API_LINK=API_LINK)
+    new_dest = []
+    for d in destinations:
+        temp = requests.get(
+            API_LINK+d['table']+'/'+str(d['table_id'])).json()
+        temp['table'] = d['table']
+        temp['details_id'] = d['id']
+        new_dest.append(temp)
+    return render_template('destinos.html', destinations=new_dest, current_user=current_user, API_LINK=API_LINK)
 
 # hoteis
 
@@ -100,6 +107,17 @@ def carros():
     print("--------------------------------------------------------------------------cars")
     return render_template('carros.html', cars=cars, current_user=current_user, API_LINK=API_LINK)
 
+
+@app.route('/details/<id>')
+def details(id=None):
+    if not id:
+        return 'give id'
+    item = requests.get(url=API_LINK+'destination/'+id).json()
+    item_details = requests.get(
+        url=API_LINK+item["table"]+'/'+str(item["table_id"])).json()
+    return render_template('details.html', current_user=current_user, API_LINK=API_LINK, details=item_details, table=item['table'])
+
+
 # login
 
 
@@ -137,6 +155,12 @@ def logout():
 @app.route('/profile', methods=["GET"])
 def profile():
     return render_template('profile.html', current_user=current_user, API_LINK=API_LINK)
+
+
+@login_required
+@app.route('/cart', methods=["GET"])
+def cart():
+    return render_template('cart.html', current_user=current_user, API_LINK=API_LINK)
 
 
 # register
