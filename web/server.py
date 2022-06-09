@@ -57,6 +57,10 @@ class Cart(db.Model):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
+def get_cart_size(username):
+    return len(Cart.query.filter(Cart.username == username).all())
+
+
 @login_required
 @app.route('/addtocart/<id>')
 def addtocart(id=None):
@@ -88,19 +92,40 @@ def removefromcart(id=None):
         return redirect(session['url'])
     return redirect(url_for('cart'))
 
+
+@login_required
+@app.route('/cart', methods=["GET"])
+def cart():
+    session['url'] = url_for('cart')
+    carts = []
+    querry = Cart.query.filter(Cart.username == current_user.username).all()
+    total_price = 0
+    for item in querry:
+        destination = requests.get(
+            url=API_LINK+'destination/'+str(item.item_id)).json()
+        temp = requests.get(
+            url=API_LINK+destination['table']+'/'+str(destination['table_id'])).json()
+        temp['details_id'] = destination['id']
+        total_price += float(temp['price'])
+        carts.append(temp)
+    return render_template('cart.html', current_user=current_user, API_LINK=API_LINK, carts=carts, cart_size=get_cart_size(current_user.username), total_price=total_price)
+
+
 # home
 
 
 @app.route('/')
 def index():
+    session['url'] = url_for('index')
     destinations = requests.get(url=API_LINK+'attraction').json()
-    return render_template('index.html', destinations=destinations, current_user=current_user, API_LINK=API_LINK)
+    return render_template('index.html', destinations=destinations, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 # destinos
 
 
 @app.route('/destinos')
 def destinos():
+    session['url'] = url_for('destinos')
     destinations = requests.get(url=API_LINK+"destination/").json()
     print("--------------------------------------------------------------------------destinations")
     print(destinations)
@@ -112,59 +137,63 @@ def destinos():
         temp['table'] = d['table']
         temp['details_id'] = d['id']
         new_dest.append(temp)
-    return render_template('destinos.html', destinations=new_dest, current_user=current_user, API_LINK=API_LINK)
+    return render_template('destinos.html', destinations=new_dest, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 # hoteis
 
 
 @app.route('/hoteis')
 def hoteis():
+    session['url'] = url_for('hoteis')
     hotels = requests.get(url=API_LINK+"hotel/").json()
     for hotel in hotels:
         hotel['details_id'] = get_destination_id(hotel, 'hotel')
     print("--------------------------------------------------------------------------hotels")
     print(hotels)
     print("--------------------------------------------------------------------------hotels")
-    return render_template('hoteis.html', hotels=hotels, current_user=current_user, API_LINK=API_LINK)
+    return render_template('hoteis.html', hotels=hotels, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 # imoveis
 
 
 @app.route('/imoveis')
 def imoveis():
+    session['url'] = url_for('imoveis')
     estates = requests.get(url=API_LINK+"estate/").json()
     for item in estates:
         item['details_id'] = get_destination_id(item, 'estate')
     print("--------------------------------------------------------------------------estates")
     print(estates)
     print("--------------------------------------------------------------------------estates")
-    return render_template('imoveis.html', estates=estates, current_user=current_user, API_LINK=API_LINK)
+    return render_template('imoveis.html', estates=estates, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 # transportes
 
 
 @app.route('/transportes')
 def transportes():
+    session['url'] = url_for('transportes')
     transports = requests.get(url=API_LINK+"transport/").json()
     for item in transports:
         item['details_id'] = get_destination_id(item, 'transport')
     print("--------------------------------------------------------------------------transports")
     print(transports)
     print("--------------------------------------------------------------------------transports")
-    return render_template('transportes.html', transports=transports, current_user=current_user, API_LINK=API_LINK)
+    return render_template('transportes.html', transports=transports, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 # carros
 
 
 @app.route('/carros')
 def carros():
+    session['url'] = url_for('carros')
     cars = requests.get(url=API_LINK+"rentacar/").json()
     for item in cars:
         item['details_id'] = get_destination_id(item, 'rentacar')
     print("--------------------------------------------------------------------------cars")
     print(cars)
     print("--------------------------------------------------------------------------cars")
-    return render_template('carros.html', cars=cars, current_user=current_user, API_LINK=API_LINK)
+    return render_template('carros.html', cars=cars, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 
 @app.route('/details/<id>')
@@ -174,7 +203,7 @@ def details(id=None):
     item = requests.get(url=API_LINK+'destination/'+id).json()
     item_details = requests.get(
         url=API_LINK+item["table"]+'/'+str(item["table_id"])).json()
-    return render_template('details.html', current_user=current_user, API_LINK=API_LINK, details=item_details, table=item['table'], id=id)
+    return render_template('details.html', current_user=current_user, API_LINK=API_LINK, details=item_details, table=item['table'], id=id, cart_size=get_cart_size(current_user.username))
 
 
 # login
@@ -200,7 +229,7 @@ def login(username=None, password=None):
             print("____________________________________________LOGED IN ", current_user)
             return redirect(url_for('index'))
 
-    return render_template('login.html', current_user=current_user, API_LINK=API_LINK)
+    return render_template('login.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 
 @login_required
@@ -213,20 +242,7 @@ def logout():
 @login_required
 @app.route('/profile', methods=["GET"])
 def profile():
-    return render_template('profile.html', current_user=current_user, API_LINK=API_LINK)
-
-
-@login_required
-@app.route('/cart', methods=["GET"])
-def cart():
-    carts = []
-    querry = Cart.query.filter(Cart.username == current_user.username).all()
-    for item in querry:
-        destination = requests.get(
-            url=API_LINK+'destination/'+str(item.item_id)).json()
-        carts.append(requests.get(
-            url=API_LINK+destination['table']+'/'+str(destination['table_id'])).json())
-    return render_template('cart.html', current_user=current_user, API_LINK=API_LINK, carts=carts)
+    return render_template('profile.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 
 # register
@@ -239,7 +255,7 @@ def register():
         r = requests.post(url=API_LINK+"user/", data=data)
         print(data)
         return r.json()
-    return render_template('register.html', current_user=current_user, API_LINK=API_LINK)
+    return render_template('register.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
 
 # Start Flask App

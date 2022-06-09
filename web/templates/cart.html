@@ -56,14 +56,26 @@
 						{% endif %}
 					</div>
 					
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						{% if details['description'] %}
 						<br>
 							<p>{{details['description']}}</p>
 						{% endif %}
 					</div>
+					<div class="col-sm-1">
+						<h4><a href="/removefromcart/{{details['details_id']}}">Remove</a></h4>
+					</div>
 				</div>
 				{% endfor %}
+
+				<div class="row" style="background-color: rgb(237, 242, 214); padding-top: 20px; padding-bottom: 20px; margin-bottom: 30px;">
+					<div class="col-sm-6">
+						<h1>Total: {{total_price}}€</h1>
+					</div>
+					<div class="col-sm-6" style="text-align: right;">
+						<h1><a href="">Pagar</a></h1>
+					</div>
+				</div>
 			</div>		
 		</div>
 	</section>
