@@ -1,18 +1,19 @@
-from flask import Flask, render_template, url_for, request, redirect, session
+from flask import Flask, render_template, url_for, request, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 import json
 import requests
-from settings import API_LINK
+from settings import *
 from functions import get_destination_id
-
+from werkzeug.utils import secure_filename
+import os
 
 # initial setup
 app = Flask(__name__)
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'verysecretkeymuchwow123'
-
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Login manager
 login_manager = LoginManager()
@@ -278,10 +279,37 @@ def register():
         data = request.form
         r = requests.post(url=API_LINK+"user/", data=data)
         print(data)
-        return r.json()
-    return render_template('register.html', current_user=current_user, API_LINK=API_LINK,)
+        return url_for('login')
+    return render_template('register.html', current_user=current_user, API_LINK=API_LINK)
 
 
-# Start Flask App
+@login_required
+@app.route('/addestate', methods=["GET", "POST"])
+def addestate():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            data = dict(request.form)
+            fn = UPLOAD_FOLDER+file.filename
+            file = {'file': open(fn, 'rb')}
+            data['photos'] = requests.post(API_LINK+'upload', files=file).text
+            data['owner_username'] = current_user.username
+            os.remove(fn)
+            r = requests.post(url=API_LINK+"estate/", data=data)
+            return url_for('profile')
+    return render_template('addestate.html', current_user=current_user, API_LINK=API_LINK)
+
+    # Start Flask App
 if __name__ == "__main__":
     app.run(debug=True)
