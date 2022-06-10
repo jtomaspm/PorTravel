@@ -4,7 +4,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 import json
 import requests
 from settings import *
-from functions import get_destination_id
+from functions import get_destination_id, filter_data
 from werkzeug.utils import secure_filename
 import os
 
@@ -127,7 +127,7 @@ def index():
 # destinos
 
 
-@app.route('/destinos')
+@app.route('/destinos', methods=["GET", "POST"])
 def destinos():
     session['url'] = url_for('destinos')
     destinations = requests.get(url=API_LINK+"destination/").json()
@@ -141,6 +141,8 @@ def destinos():
         temp['table'] = d['table']
         temp['details_id'] = d['id']
         new_dest.append(temp)
+    if request.method == "POST":
+        new_dest = filter_data(request.form['query'], new_dest)
     if current_user.is_authenticated:
         return render_template('destinos.html', destinations=new_dest, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
     else:
@@ -150,7 +152,7 @@ def destinos():
 # hoteis
 
 
-@app.route('/hoteis')
+@app.route('/hoteis', methods=["GET", "POST"])
 def hoteis():
     session['url'] = url_for('hoteis')
     hotels = requests.get(url=API_LINK+"hotel/").json()
@@ -159,6 +161,8 @@ def hoteis():
     print("--------------------------------------------------------------------------hotels")
     print(hotels)
     print("--------------------------------------------------------------------------hotels")
+    if request.method == "POST":
+        hotels = filter_data(request.form['query'], hotels)
     if current_user.is_authenticated:
         return render_template('hoteis.html', hotels=hotels, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
     else:
@@ -168,7 +172,7 @@ def hoteis():
 # imoveis
 
 
-@app.route('/imoveis')
+@app.route('/imoveis', methods=["GET", "POST"])
 def imoveis():
     session['url'] = url_for('imoveis')
     estates = requests.get(url=API_LINK+"estate/").json()
@@ -177,6 +181,8 @@ def imoveis():
     print("--------------------------------------------------------------------------estates")
     print(estates)
     print("--------------------------------------------------------------------------estates")
+    if request.method == "POST":
+        estates = filter_data(request.form['query'], estates)
     if current_user.is_authenticated:
         return render_template('imoveis.html', estates=estates, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
     else:
@@ -185,7 +191,7 @@ def imoveis():
 # transportes
 
 
-@app.route('/transportes')
+@app.route('/transportes', methods=["GET", "POST"])
 def transportes():
     session['url'] = url_for('transportes')
     transports = requests.get(url=API_LINK+"transport/").json()
@@ -194,6 +200,8 @@ def transportes():
     print("--------------------------------------------------------------------------transports")
     print(transports)
     print("--------------------------------------------------------------------------transports")
+    if request.method == "POST":
+        transports = filter_data(request.form['query'], transports)
     if current_user.is_authenticated:
         return render_template('transportes.html', transports=transports, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
     else:
@@ -203,7 +211,7 @@ def transportes():
 # carros
 
 
-@app.route('/carros')
+@app.route('/carros', methods=["GET", "POST"])
 def carros():
     session['url'] = url_for('carros')
     cars = requests.get(url=API_LINK+"rentacar/").json()
@@ -212,6 +220,8 @@ def carros():
     print("--------------------------------------------------------------------------cars")
     print(cars)
     print("--------------------------------------------------------------------------cars")
+    if request.method == "POST":
+        cars = filter_data(request.form['query'], cars)
     if current_user.is_authenticated:
         return render_template('carros.html', cars=cars, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
     else:
@@ -321,7 +331,6 @@ def addestate():
             r = requests.post(url=API_LINK+"estate/", data=data)
             return url_for('profile')
     return render_template('addestate.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
-
 
     # Start Flask App
 if __name__ == "__main__":
