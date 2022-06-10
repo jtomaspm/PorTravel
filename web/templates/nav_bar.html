@@ -3,7 +3,7 @@
   		<div class="container">
   			<div class="" style="display: flex; justify-content: center;">
 		
-	  			<div class="col-lg-12 col-md-8 col-sm-9">
+	  			<div class="col-lg-12 col-md-12 col-sm-12">
 	  				<div class="mobile-menu-icon">
 		              <i class="fa fa-bars"></i>
 		            </div>
@@ -15,8 +15,13 @@
 							<li><a href="{{url_for('imoveis')}}" {%- if request.path == "/imoveis" %} class="active"{% endif %}>Imóveis</a></li>
 							<li><a href="{{url_for('transportes')}}" {%- if request.path == "/transportes" %} class="active"{% endif %}>Transportes</a></li>
 							<li><a href="{{url_for('carros')}}" {%- if request.path == "/carros" %} class="active"{% endif %}>Carros</a></li>
-							<li><a href="{{url_for('login')}}" {%- if request.path == "/login" %} class="active"{% endif %}>Login</a></li>
-							<li><a href="{{url_for('register')}}" {%- if request.path == "/register" %} class="active"{% endif %}>Register</a></li>
+							{% if current_user.is_authenticated %}
+								<li><a href="{{url_for('profile')}}" {%- if request.path == "/profile" %} class="active"{% endif %}>Perfil</a></li>
+								<li><a href="{{url_for('cart')}}" {%- if request.path == "/cart" %} class="active"{% endif %}>Carrinho ({{cart_size}})</a></li>
+							{% else %}
+								<li><a href="{{url_for('login')}}" {%- if request.path == "/login" %} class="active"{% endif %}>Login</a></li>
+								<li><a href="{{url_for('register')}}" {%- if request.path == "/register" %} class="active"{% endif %}>Register</a></li>
+							{% endif %}
 						</ul>
 					</nav>		
 	  			</div>				

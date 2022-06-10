@@ -1,7 +1,12 @@
-from flask import Flask, render_template, url_for, request, redirect, jsonify
+from flask import Flask, render_template, url_for, request, redirect, jsonify, send_file, flash
 from flask_bcrypt import Bcrypt
 import json
 from flask_sqlalchemy import SQLAlchemy
+import os
+from settings import *
+from werkzeug.utils import secure_filename
+import hashlib
+import random
 
 
 # initial setup
@@ -10,9 +15,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'verysecretkeymuchwow123'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Database Models
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -92,6 +98,7 @@ class Transport(db.Model):
     company = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     method = db.Column(db.String(100), nullable=False)
+    photos = db.Column(db.String(100), nullable=True)
     description = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
@@ -134,12 +141,54 @@ class Attraction(db.Model):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(100), nullable=False, unique=True)
+
+    def __init__(self, path):
+        self.path = path
+
+    def __repr__(self):
+        return '<Image %r>' % self.path
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
 # home
 
 
 @app.route('/')
 def home():
     return 'Welcome to PorTravel Api!'
+
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            f, ext = file.filename.rsplit('.', 1)
+            f = f + str(random.randint(0, 999999))
+            f = str(hashlib.md5(f.encode()).hexdigest())
+            filename = f+'.'+ext
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            img = Image(
+                path=filename
+            )
+            db.session.add(img)
+            db.session.commit()
+            return str(img.id)
+
 
 # user
 
@@ -190,8 +239,6 @@ def user(username=None):
                         'user authentication incorrect'
                     ]
                 }
-            user.username = data['username']
-            user.password = data['new_password']
             user.name = data['name']
             user.address = data['address']
             user.bithdate = data['bithdate']
@@ -223,26 +270,28 @@ def user(username=None):
     else:
         if request.method == "POST":
             data = request.form
+            print("--------------------------FORM DATA-----------------------")
+            print(data)
             new_user = None
-            try:
-                new_user = User(
-                    username=data['username'],
-                    password=data['password'],
-                    name=data['name'],
-                    address=data['address'],
-                    bithdate=data['bithdate'],
-                    postal=data['postal'],
-                    city=data['city'],
-                    country=data['country'],
-                    email=data['email'],
-                    phone=data['phone']
-                )
-            except:
-                return {
-                    'errors': [
-                        'invalid user information'
-                    ]
-                }
+            # try:
+            new_user = User(
+                username=data['username'],
+                password=data['password'],
+                name=data['name'],
+                address=data['address'],
+                bithdate=data['bithdate'],
+                postal=data['postal'],
+                city=data['city'],
+                country=data['country'],
+                email=data['email'],
+                phone=data['phone']
+            )
+            # except:
+            #     return {
+            #         'errors': [
+            #             'invalid user information'
+            #         ]
+            #     }
 
             try:
                 db.session.add(new_user)
@@ -322,7 +371,7 @@ def hotel(id=None):
             elem = Hotel.query.filter(
                 Hotel.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Hotel').first()
+                Destination.table_id == id, Destination.table == 'hotel').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -347,7 +396,7 @@ def hotel(id=None):
             elem = Hotel.query.filter(
                 Hotel.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Hotel').first()
+                Destination.table_id == id, Destination.table == 'hotel').first()
             if not elem:
                 return {
                     errors: [
@@ -380,7 +429,7 @@ def hotel(id=None):
                 db.session.add(new_elem)
                 db.session.commit()
                 new_dest = Destination(
-                    table='Hotel',
+                    table='hotel',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
@@ -431,7 +480,7 @@ def estate(id=None):
             elem = Estate.query.filter(
                 Estate.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Estate').first()
+                Destination.table_id == id, Destination.table == 'estate').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -457,7 +506,7 @@ def estate(id=None):
             elem = Estate.query.filter(
                 Estate.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Estate').first()
+                Destination.table_id == id, Destination.table == 'estate').first()
             if not elem or not elem_dest:
                 return {
                     errors: [
@@ -490,7 +539,7 @@ def estate(id=None):
                 db.session.add(new_elem)
                 db.session.commit()
                 new_dest = Destination(
-                    table='Estate',
+                    table='estate',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
@@ -541,7 +590,7 @@ def transport(id=None):
             elem = Transport.query.filter(
                 Transport.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Transport').first()
+                Destination.table_id == id, Destination.table == 'transport').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -555,6 +604,7 @@ def transport(id=None):
             elem.company = data['company']
             elem.price = data['price']
             elem.method = data['method']
+            elem.photos = data['photos']
             elem.description = data['description']
             elem_dest.city = data['destination_city']
             elem_dest.country = data['destination_country']
@@ -567,7 +617,7 @@ def transport(id=None):
             elem = Transport.query.filter(
                 Transport.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Transport').first()
+                Destination.table_id == id, Destination.table == 'transport').first()
             if not elem or not elem_dest:
                 return {
                     errors: [
@@ -595,12 +645,13 @@ def transport(id=None):
                     company=data['company'],
                     price=data['price'],
                     method=data['method'],
+                    photos=data['photos'],
                     description=data['description']
                 )
                 db.session.add(new_elem)
                 db.session.commit()
                 new_dest = Destination(
-                    table='Transport',
+                    table='transport',
                     table_id=new_elem.id,
                     city=data['destination_city'],
                     country=data['destination_country']
@@ -651,7 +702,7 @@ def rent_a_car(id=None):
             elem = Rent_A_Car.query.filter(
                 Rent_A_Car.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Rent_A_Car').first()
+                Destination.table_id == id, Destination.table == 'rentacar').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -676,7 +727,7 @@ def rent_a_car(id=None):
             elem = Rent_A_Car.query.filter(
                 Rent_A_Car.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Rent_A_Car').first()
+                Destination.table_id == id, Destination.table == 'rentacar').first()
             if not elem or not elem_dest:
                 return {
                     errors: [
@@ -709,7 +760,7 @@ def rent_a_car(id=None):
                 db.session.commit()
 
                 new_dest = Destination(
-                    table='Rent_A_Car',
+                    table='rentacar',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
@@ -761,7 +812,7 @@ def attraction(id=None):
             elem = Attraction.query.filter(
                 Attraction.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Attraction').first()
+                Destination.table_id == id, Destination.table == 'attraction').first()
             if not elem or not elem_dest:
                 return {
                     'errors': [
@@ -785,7 +836,7 @@ def attraction(id=None):
             elem = Attraction.query.filter(
                 Attraction.id == id).first()
             elem_dest = Destination.query.filter(
-                Destination.table_id == id, Destination.table == 'Attraction').first()
+                Destination.table_id == id, Destination.table == 'attraction').first()
             if not elem or not elem_dest:
                 return {
                     errors: [
@@ -805,7 +856,6 @@ def attraction(id=None):
             new_elem = None
             new_dest = None
             try:
-                print("hello")
                 new_elem = Attraction(
                     city=data['city'],
                     country=data['country'],
@@ -819,7 +869,7 @@ def attraction(id=None):
                 db.session.commit()
 
                 new_dest = Destination(
-                    table='Attraction',
+                    table='attraction',
                     table_id=new_elem.id,
                     city=data['city'],
                     country=data['country']
@@ -846,6 +896,12 @@ def attraction(id=None):
             return json.dumps(all_elems_json)
 
     return "Hello from Attraction Page"
+
+
+@app.route('/image/<id>')
+def image(id=None):
+    img = Image.query.filter(Image.id == id).first()
+    return send_file('static/img/'+img.path)
 
 
 # Start Flask App

@@ -9,59 +9,63 @@
   <body class="tm-gray-bg">
 	{% include 'nav_bar.html' %}
 	<div class="form-wrapper">
-		<form>
+		<form method="POST" action="">
 			<!-- Email input -->
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="username">Username</label>
-			  <input type="text" id="username" class="form-control" />
+			  <input type="text" id="username" name="username" class="form-control" />
 			</div>
 		  
 			<!-- Password input -->
 			<div class="form-outline  col-lg-6">
 				<label class="form-label" for="password">Password</label>
-			  <input type="password" id="password" class="form-control" />
+			  <input type="password" id="password" name="password" class="form-control" />
 			</div>
 <br>
 			<div class="form-outline col-lg-6">
-				<label class="form-label" for="completename">Nome Completo</label>
-				<input type="text" id="completename" class="form-control" />
+				<label class="form-label" for="name">Nome Completo</label>
+				<input type="text" id="name" name="name" class="form-control" />
 			</div>
 		
 			<!-- Password input -->
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="email">Email</label>
-				<input type="email" id="email" class="form-control" />
+				<input type="email" id="email" name="email" class="form-control" />
 			</div>
 <br>
 			<div class="form-outline col-lg-6">
-				<label class="form-label" for="adress">Morada</label>
-				<input type="text" id="adress" class="form-control" />
+				<label class="form-label" for="address">Morada</label>
+				<input type="text" id="address" name="address" class="form-control" />
 			</div>
 		
 			<!-- Password input -->
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="birthdate">Data de Nascimento</label>
-				<input type="text" id="birthdate" class="form-control" placeholder="dd/mm/yyyy"/>
+				<input type="text" id="bithdate" name="bithdate" class="form-control" placeholder="dd/mm/yyyy"/>
 			</div>
 <br>
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="postalcode">Código Postal</label>
-				<input type="text" id="postalcode" class="form-control" />
+				<input type="text" id="postal" name="postal" class="form-control" />
 			</div>
 		
 			<!-- Password input -->
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="city">Cidade</label>
-				<input type="text" id="city" class="form-control" />
+				<input type="text" id="city" name="city" class="form-control" />
 			</div>
-<br>
+			<br>
+			<div class="form-outline col-lg-6">
+				<label class="form-label" for="phone">País</label>
+				<input type="text" id="country" name="country" class="form-control" />
+			</div><br>
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="phone">Telemóvel</label>
-				<input type="text" id="phone" class="form-control" />
+				<input type="text" id="phone" name="phone" class="form-control" />
 			</div>
 			<br><br><br><br>
 			<!-- Submit button -->
-			<button type="button" class="btn btn-primary btn-block col-lg-12"style="width: 50% !important; margin-left: 25%; margin-right: 25%;"">Register</button>
+			<button type="submit" class="btn btn-primary btn-block col-lg-12"style="width: 50% !important; margin-left: 25%; margin-right: 25%;"">Register</button>
 		  
 		  </form>
 

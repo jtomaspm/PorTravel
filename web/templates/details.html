@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Home</title>
+<link href="{{ url_for('static', filename='css/login.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<body class="tm-gray-bg">
+	{% include 'nav_bar.html' %}
+    <div class="container">
+        <div class="row">
+            <div class="" style="margin-top: 20px; margin-bottom: 80px;">
+                <div class="col-lg-4 col-md-3 col-sm-3"><hr></div>
+                <div class="col-lg-4 col-md-6 col-sm-6"><h2 class="tm-section-title">{{table.title()}}</h2></div>
+                <div class="col-lg-4 col-md-3 col-sm-3"><hr></div>	
+            </div>
+        </div>
+        <div class="row" style="background-color: white; padding-top: 20px; padding-bottom: 20px;">
+            <div class="col-sm-3">
+                <br>
+                {% if details['name'] %}
+                    <h1>{{details['name']}}</h1><br>
+                {% endif %}
+                {% if details['model'] %}
+                    <h1>{{details['model']}}</h1><br>
+                {% endif %}
+                {% if details['method'] %}
+                    <h1>{{details['method']}}</h1><br>
+                {% endif %}
+                {% if details['company'] %}
+                    <h5>{{details['company']}}</h5><br>
+                {% endif %}
+                <p>{% if details['city'] %}{{details['city']}}{% endif %}{% if details['country'] %},{{details['country']}}{% endif %}</p>
+                <p>{% if details['origin_city'] %}De: {{details['origin_city']}}{% endif %}{% if details['origin_country'] %},{{details['origin_country']}}{% endif %}</p>
+                <p>{% if details['destination_city'] %}Para: {{details['destination_city']}}{% endif %}{% if details['destination_country'] %},{{details['destination_country']}}{% endif %}</p>
+                <p>{% if details['owner_username'] %}De: {{details['owner_username']}}{% endif %}</p>
+                <br>
+                {% if details['price'] %}
+                    <h3>{{details['price']}}€  {% if current_user.is_authenticated %}<a style="font-size: 15px; border-radius: 1px; border-style:dotted; padding: 2px; margin-left: 7px;" href="/addtocart/{{id}}"> +Carrinho </a>{% endif %}</h3> 
+                {% endif %}
+                {% if details['persons'] %}
+                <br>
+                    <h4>🧑 {{details['persons']}} </h4> 
+                {% endif %}
+            </div>
+            <div class="col-sm-5">
+                {% if details['photos'] %}
+                
+                    <img src="{{ API_LINK + '/image/' + details['photos'] }}" alt="image" class="img-responsive" style="width: 500px;">
+                {% endif %}
+            </div>
+            
+            <div class="col-sm-4">
+                {% if details['description'] %}
+                <br>
+                    <p>{{details['description']}}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+{% endblock %}
