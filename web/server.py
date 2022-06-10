@@ -118,7 +118,10 @@ def cart():
 def index():
     session['url'] = url_for('index')
     destinations = requests.get(url=API_LINK+'attraction').json()
-    return render_template('index.html', destinations=destinations, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    if current_user.is_authenticated:
+        return render_template('index.html', destinations=destinations, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    else:
+        return render_template('index.html', destinations=destinations, current_user=current_user, API_LINK=API_LINK, cart_size=None)
 
 # destinos
 
@@ -137,7 +140,11 @@ def destinos():
         temp['table'] = d['table']
         temp['details_id'] = d['id']
         new_dest.append(temp)
-    return render_template('destinos.html', destinations=new_dest, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    if current_user.is_authenticated:
+        return render_template('destinos.html', destinations=new_dest, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    else:
+        return render_template('destinos.html', destinations=new_dest, current_user=current_user, API_LINK=API_LINK, cart_size=None)
+
 
 # hoteis
 
@@ -151,7 +158,11 @@ def hoteis():
     print("--------------------------------------------------------------------------hotels")
     print(hotels)
     print("--------------------------------------------------------------------------hotels")
-    return render_template('hoteis.html', hotels=hotels, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    if current_user.is_authenticated:
+        return render_template('hoteis.html', hotels=hotels, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    else:
+        return render_template('hoteis.html', hotels=hotels, current_user=current_user, API_LINK=API_LINK, cart_size=None)
+
 
 # imoveis
 
@@ -165,7 +176,10 @@ def imoveis():
     print("--------------------------------------------------------------------------estates")
     print(estates)
     print("--------------------------------------------------------------------------estates")
-    return render_template('imoveis.html', estates=estates, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    if current_user.is_authenticated:
+        return render_template('imoveis.html', estates=estates, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    else:
+        return render_template('imoveis.html', estates=estates, current_user=current_user, API_LINK=API_LINK, cart_size=None)
 
 # transportes
 
@@ -179,7 +193,11 @@ def transportes():
     print("--------------------------------------------------------------------------transports")
     print(transports)
     print("--------------------------------------------------------------------------transports")
-    return render_template('transportes.html', transports=transports, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    if current_user.is_authenticated:
+        return render_template('transportes.html', transports=transports, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    else:
+        return render_template('transportes.html', transports=transports, current_user=current_user, API_LINK=API_LINK, cart_size=None)
+
 
 # carros
 
@@ -193,7 +211,10 @@ def carros():
     print("--------------------------------------------------------------------------cars")
     print(cars)
     print("--------------------------------------------------------------------------cars")
-    return render_template('carros.html', cars=cars, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    if current_user.is_authenticated:
+        return render_template('carros.html', cars=cars, current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    else:
+        return render_template('carros.html', cars=cars, current_user=current_user, API_LINK=API_LINK, cart_size=None)
 
 
 @app.route('/details/<id>')
@@ -203,7 +224,10 @@ def details(id=None):
     item = requests.get(url=API_LINK+'destination/'+id).json()
     item_details = requests.get(
         url=API_LINK+item["table"]+'/'+str(item["table_id"])).json()
-    return render_template('details.html', current_user=current_user, API_LINK=API_LINK, details=item_details, table=item['table'], id=id, cart_size=get_cart_size(current_user.username))
+    if current_user.is_authenticated:
+        return render_template('details.html', current_user=current_user, API_LINK=API_LINK, details=item_details, table=item['table'], id=id, cart_size=get_cart_size(current_user.username))
+    else:
+        return render_template('details.html', current_user=current_user, API_LINK=API_LINK, details=item_details, table=item['table'], id=id, cart_size=None)
 
 
 # login
@@ -229,7 +253,7 @@ def login(username=None, password=None):
             print("____________________________________________LOGED IN ", current_user)
             return redirect(url_for('index'))
 
-    return render_template('login.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    return render_template('login.html', current_user=current_user, API_LINK=API_LINK)
 
 
 @login_required
@@ -255,7 +279,7 @@ def register():
         r = requests.post(url=API_LINK+"user/", data=data)
         print(data)
         return r.json()
-    return render_template('register.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    return render_template('register.html', current_user=current_user, API_LINK=API_LINK,)
 
 
 # Start Flask App
