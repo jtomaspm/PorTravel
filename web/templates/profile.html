@@ -18,26 +18,27 @@
                 <h1>Olá,</h1>
                 <h1>{{current_user.username}} !</h1>
             </div>
-            <div class="col-md-5 border-right">
-                <div class="p-3 py-5">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+            <form action="" method="post">
+                <div class="col-md-5 border-right">
+                    <div class="p-3 py-5">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12"><label class="labels">Telemóvel</label><input type="text" class="form-control" id="phone" name="phone" placeholder="{{user['phone']}}" value=""></div>
+                            <div class="col-md-12"><label class="labels">Morada</label><input type="text" class="form-control" id="address" name="address" placeholder="{{user['address']}}" value=""></div>
+                            <div class="col-md-12"><label class="labels">Códico Postal</label><input type="text" class="form-control" id="postal" name="postal" placeholder="{{user['postal']}}" value=""></div>
+                            <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" id="email" name="email" placeholder="{{user['email']}}" value=""></div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6"><label class="labels">País</label><input type="text" class="form-control" id="country" name="country" placeholder="{{user['country']}}" value=""></div>
+                            <div class="col-md-6"><label class="labels">Cidade</label><input type="text" class="form-control" id="city" name="city" value="" placeholder="{{user['city']}}"></div>
+                            <div class="col-md-12"><label class="labels">Password</label><input type="password" class="form-control" id="password" name="password" value="" placeholder="password"></div>
+                        </div>
+                        <br><br>
+                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Alterar Perfil</button></div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Nome</label><input type="text" class="form-control" id=""name" name="name" placeholder="John Doe" value=""></div>
-                        <div class="col-md-12"><label class="labels">Password</label><input type="password" class="form-control" id=""password" name="password" value="" placeholder="password"></div>
-                        <div class="col-md-12"><label class="labels">Telemóvel</label><input type="text" class="form-control" placeholder="+351 9xxxxxxxx" value=""></div>
-                        <div class="col-md-12"><label class="labels">Morada</label><input type="text" class="form-control" placeholder="Morada" value=""></div>
-                        <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="1234-123" value=""></div>
-                        <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" placeholder="john@email.com" value=""></div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-6"><label class="labels">País</label><input type="text" class="form-control" placeholder="Portugal" value=""></div>
-                        <div class="col-md-6"><label class="labels">Cidade</label><input type="text" class="form-control" value="" placeholder="Lisboa"></div>
-                    </div>
-                    <br><br>
-                    <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Alterar Perfil</button></div>
                 </div>
-            </div>
+            </form>
                 <div class="col-md-4">
                 <div class="p-3 py-5" style="align-items: center;">
                     <br><br><br><br>

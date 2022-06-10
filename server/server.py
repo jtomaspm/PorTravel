@@ -239,8 +239,6 @@ def user(username=None):
                         'user authentication incorrect'
                     ]
                 }
-            user.username = data['username']
-            user.password = data['new_password']
             user.name = data['name']
             user.address = data['address']
             user.bithdate = data['bithdate']

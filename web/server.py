@@ -265,9 +265,21 @@ def logout():
 
 
 @login_required
-@app.route('/profile', methods=["GET"])
+@app.route('/profile', methods=["GET", "POST"])
 def profile():
-    return render_template('profile.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+    user_json = requests.get(url=API_LINK+'user/'+current_user.username).json()
+    if request.method == 'POST':
+        data = request.form
+        for d in data:
+            if data[d]:
+                user_json[d] = data[d]
+        ver = requests.post(
+            url=API_LINK+'user/'+current_user.username, data={'password': data['password']}).json()
+        if ver['verified']:
+            requests.patch(url=API_LINK+'user/' +
+                           current_user.username, data=user_json)
+
+    return render_template('profile.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username), user=user_json)
 
 
 # register
@@ -308,7 +320,8 @@ def addestate():
             os.remove(fn)
             r = requests.post(url=API_LINK+"estate/", data=data)
             return url_for('profile')
-    return render_template('addestate.html', current_user=current_user, API_LINK=API_LINK)
+    return render_template('addestate.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
+
 
     # Start Flask App
 if __name__ == "__main__":
