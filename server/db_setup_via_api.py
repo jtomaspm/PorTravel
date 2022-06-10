@@ -1,4 +1,3 @@
-from unicodedata import name
 from db_setup import restart_db
 import requests
 from os import listdir
