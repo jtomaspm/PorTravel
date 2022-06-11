@@ -332,6 +332,11 @@ def addestate():
             return url_for('profile')
     return render_template('addestate.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
+    #Payment 
+@app.route ('/payment', methods=["GET", "POST"])
+def payment():
+    return render_template('pagamento.html' , current_user=current_user, API_LINK=API_LINK )
+
     # Start Flask App
 if __name__ == "__main__":
     app.run(debug=True)
