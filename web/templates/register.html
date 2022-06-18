@@ -2,6 +2,7 @@
 
 {% block head %}
 <title>Home</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
 <link href="{{ url_for('static', filename='css/login.css')}}" rel="stylesheet">
 {% endblock %}
 
@@ -65,13 +66,19 @@
 			</div>
 			<br><br><br><br>
 			<!-- Submit button -->
-			<button type="submit" class="btn btn-primary btn-block col-lg-12"style="width: 50% !important; margin-left: 25%; margin-right: 25%;"">Register</button>
+			<button onclick="hashpwd()" type="submit" class="btn btn-primary btn-block col-lg-12"style="width: 50% !important; margin-left: 25%; margin-right: 25%;"">Register</button>
 		  
 		  </form>
 
 	</div>
-	
-
+	<script>
+		function hashpwd(){
+			let input_field = document.getElementById("password");
+			input_field.value = CryptoJS.MD5(input_field.value);
+			console.log(input_field.value);
+			console.log(input_field);
+		}
+	</script>
 
  </body>
 {% endblock %}

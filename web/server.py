@@ -248,6 +248,7 @@ def details(id=None):
 def login(username=None, password=None):
     if request.method == "POST":
         data = request.form
+        print(data["password"])
         r = requests.post(url=API_LINK+"user/"+data["username"], data=data)
         if r.json()["verified"]:
             query = User.query.filter(
@@ -289,7 +290,7 @@ def profile():
             requests.patch(url=API_LINK+'user/' +
                            current_user.username, data=user_json)
 
-    return render_template('profile.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username), user=user_json)
+    return render_template('profile.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username), user=user_json, secret_key=app.config['SECRET_KEY'])
 
 
 # register
@@ -300,7 +301,7 @@ def register():
     if request.method == "POST":
         data = request.form
         r = requests.post(url=API_LINK+"user/", data=data)
-        print(data)
+        print(data['password'])
         return url_for('login')
     return render_template('register.html', current_user=current_user, API_LINK=API_LINK)
 
@@ -332,10 +333,24 @@ def addestate():
             return url_for('profile')
     return render_template('addestate.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
-    #Payment 
-@app.route ('/payment', methods=["GET", "POST"])
+    # Payment
+
+
+@app.route('/payment', methods=["GET", "POST"])
 def payment():
-    return render_template('pagamento.html' , current_user=current_user, API_LINK=API_LINK )
+    carts = []
+    querry = Cart.query.filter(Cart.username == current_user.username).all()
+    total_price = 0
+    for item in querry:
+        destination = requests.get(
+            url=API_LINK+'destination/'+str(item.item_id)).json()
+        temp = requests.get(
+            url=API_LINK+destination['table']+'/'+str(destination['table_id'])).json()
+        temp['details_id'] = destination['id']
+        total_price += float(temp['price'])
+        carts.append(temp)
+    return render_template('pagamento.html', current_user=current_user, API_LINK=API_LINK, carts=carts, cart_size=get_cart_size(current_user.username), total_price=total_price)
+
 
     # Start Flask App
 if __name__ == "__main__":

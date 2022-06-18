@@ -198,8 +198,10 @@ def upload():
 def user(username=None):
     if username:
         if request.method == "POST":
-            user_found = User.query.filter(
-                User.username == username, User.password == request.form['password']).first()
+            user = User.query.filter(
+                User.username == username).first()
+            user_found = bcrypt.check_password_hash(
+                user.password, request.form['password'])
             if user_found:
                 return {
                     'verified': True
@@ -231,8 +233,10 @@ def user(username=None):
 
         if request.method == "PATCH":
             data = request.form
+            hashed_password = bcrypt.generate_password_hash(
+                request.form['password'])
             user = User.query.filter(
-                User.username == username, User.password == request.form['password']).first()
+                User.username == username, User.password == hashed_password).first()
             if not user:
                 return {
                     'errors': [
@@ -273,25 +277,27 @@ def user(username=None):
             print("--------------------------FORM DATA-----------------------")
             print(data)
             new_user = None
-            # try:
-            new_user = User(
-                username=data['username'],
-                password=data['password'],
-                name=data['name'],
-                address=data['address'],
-                bithdate=data['bithdate'],
-                postal=data['postal'],
-                city=data['city'],
-                country=data['country'],
-                email=data['email'],
-                phone=data['phone']
-            )
-            # except:
-            #     return {
-            #         'errors': [
-            #             'invalid user information'
-            #         ]
-            #     }
+            try:
+                hashed_password = bcrypt.generate_password_hash(
+                    data['password'])
+                new_user = User(
+                    username=data['username'],
+                    password=hashed_password,
+                    name=data['name'],
+                    address=data['address'],
+                    bithdate=data['bithdate'],
+                    postal=data['postal'],
+                    city=data['city'],
+                    country=data['country'],
+                    email=data['email'],
+                    phone=data['phone']
+                )
+            except:
+                return {
+                    'errors': [
+                        'invalid user information'
+                    ]
+                }
 
             try:
                 db.session.add(new_user)

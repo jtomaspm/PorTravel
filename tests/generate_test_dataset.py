@@ -1,5 +1,6 @@
 
 import requests
+import hashlib
 
 
 API_LINK = 'http://127.0.0.1:4000/'
@@ -17,6 +18,7 @@ def convert_photos(photos):
 def create_users():
     usernames = ['john', 'ed', 'admin', 'kyle', 'tim']
     passwords = ['123', '123', '123', '123', '123']
+    passwords = [hashlib.md5(p.encode()).hexdigest() for p in passwords]
     names = ['John Doe', 'Edward Dji', 'Admin', 'Kyle Stwart', 'Tim Taylor']
     address = ['Travessa da Rua do Eucalipto', 'Travessa da Rua do Eucalipto',
                'Travessa da Rua do Eucalipto', 'Travessa da Rua do Eucalipto', 'Travessa da Rua do Eucalipto']

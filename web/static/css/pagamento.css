@@ -1,28 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif
+.tm-nav a {
+    font-size: 14px;
 }
-
-.container {
-    margin: 30px auto;
-}
-
-.container .card {
-    width: 100%;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    background: #fff;
-    border-radius: 0px;
-}
-
-body {
-    background: #eee
-}
-
-
 
 .btn.btn-primary {
     background-color: #ddd;
@@ -36,25 +15,6 @@ body {
 
 .btn.btn-primary:focus {
     box-shadow: none;
-}
-
-.container .card .img-box {
-    width: 80px !important;
-    height: 50px !important;
-}
-
-.container .card img {
-    width: 100% !important; 
-    object-fit: fill !important;
-}
-
-.container .card .number {
-    font-size: 24px;
-}
-
-.container .card-body .btn.btn-primary .fab.fa-cc-paypal {
-    font-size: 32px;
-    color: #3333f7;
 }
 
 .fab.fa-cc-amex {

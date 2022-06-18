@@ -4,9 +4,6 @@
 
 {% block head %}
 <link href="{{ url_for('static', filename='css/pagamento.css')}}" rel="stylesheet">
-<link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js' rel='stylesheet' type='text/css'>
-<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js' rel='stylesheet' type='text/css'>
 <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
 <title>Pagamento</title>
 {% endblock %}
@@ -31,7 +28,7 @@
                 <div class="card">
                   <div class="card-header p-0" id="headingTwo">
                     <h2 class="mb-0">
-                      <button class="btn btn-light btn-block text-left collapsed p-3 rounded-0 border-bottom-custom" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      <button onclick="activatePaypal()" class="btn btn-light btn-block text-left collapsed p-3 rounded-0 border-bottom-custom" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         <div class="d-flex align-items-center justify-content-between">
 
                           <span>Paypal</span>
@@ -41,7 +38,7 @@
                       </button>
                     </h2>
                   </div>
-                  <div id="collapseTwo" class="collapse-show" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                  <div id="collapsePaypal" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionExample">
                     <div class="card-body">
                       <input type="text" class="form-control" placeholder="Paypal email">
                     </div>
@@ -51,7 +48,7 @@
                 <div class="card">
                     <div class="card-header p-0" id="headingTwo">
                       <h2 class="mb-0">
-                        <button class="btn btn-light btn-block text-left collapsed p-3 rounded-0 border-bottom-custom" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <button onclick="activateMBway()" class="btn btn-light btn-block text-left collapsed p-3 rounded-0 border-bottom-custom" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                           <div class="d-flex align-items-center justify-content-between">
   
                             <span>MBway</span>
@@ -61,7 +58,7 @@
                         </button>
                       </h2>
                     </div>
-                    <div id="collapseTwo" class="collapse-show" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div id="collapseMBway" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                       <div class="card-body">
                         <input type="text" class="form-control" placeholder="MBway Number">
                       </div>
@@ -71,7 +68,7 @@
                 <div class="card">
                   <div class="card-header p-0">
                     <h2 class="mb-0">
-                      <button class="btn btn-light btn-block text-left p-3 rounded-0" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      <button onclick="activateCard()" class="btn btn-light btn-block text-left p-3 rounded-0" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                         <div class="d-flex align-items-center justify-content-between">
 
                           <span>Credit card</span>
@@ -88,7 +85,7 @@
                     </h2>
                   </div>
 
-                  <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                  <div id="collapseCard" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body payment-card-body">
                       
                       <span class="font-weight-normal card-text">Card Number</span>
@@ -142,59 +139,23 @@
           </div>
 
           <div class="col-md-6">
-              <span>Summary</span>
+              <span>Sumário</span>
 
               <div class="card">
 
-                <div class="d-flex justify-content-between p-3">
+              
 
-                  <div class="d-flex flex-column">
-
-                    <span>Pro(Billed Monthly) <i class="fa fa-caret-down"></i></span>
-                    <a href="#" class="billing">Save 20% with annual billing</a>
-                    
-                  </div>
-
-                  <div class="mt-1">
-                    <sup class="super-price">$9.99</sup>
-                    <span class="super-month">/Month</span>
-                  </div>
-                  
-                </div>
-
-                <hr class="mt-0 line">
-
-                <div class="p-3">
-
-                  <div class="d-flex justify-content-between mb-2">
-
-                    <span>Refferal Bonouses</span>
-                    <span>-$2.00</span>
-                    
-                  </div>
-
-                  <div class="d-flex justify-content-between">
-
-                    <span>Vat <i class="fa fa-clock-o"></i></span>
-                    <span>-20%</span>
-                    
-                  </div>
-                  
-
-                </div>
-
-                <hr class="mt-0 line">
+              
 
 
                 <div class="p-3 d-flex justify-content-between">
 
                   <div class="d-flex flex-column">
 
-                    <span>Today you pay(US Dollars)</span>
-                    <small>After 30 days $9.59</small>
+                    <span>Valor do pagamento(Euros)</span>
                     
                   </div>
-                  <span>$0</span>
+                  <span>{{total_price}}€</span>
 
                   
 
@@ -203,10 +164,7 @@
 
                 <div class="p-3">
 
-                <button class="btn btn-primary btn-block free-button">Try it free for 30 days</button> 
-               <div class="text-center">
-                 <a href="#">Have a promo code?</a>
-               </div>
+                <a href="/removefromcart" class="btn btn-primary btn-block free-button">Pagar</a>
                   
                 </div>
 
@@ -220,5 +178,54 @@
         
 
       </div>
+      <script>
+        function activatePaypal () {
+          if ( document.getElementById("collapsePaypal").classList.contains('show') ){
+            document.getElementById("collapsePaypal").classList.remove('show');
+          }
+
+          if ( document.getElementById("collapseMBway").classList.contains('show') ){
+            document.getElementById("collapseMBway").classList.remove('show');
+          }
+
+          if ( document.getElementById("collapseCard").classList.contains('show') ){
+            document.getElementById("collapseCard").classList.remove('show');
+          }
+          document.getElementById("collapsePaypal").classList.add('show');
+
+        }
+
+        function activateMBway () {
+          if ( document.getElementById("collapsePaypal").classList.contains('show') ){
+            document.getElementById("collapsePaypal").classList.remove('show');
+          }
+
+          if ( document.getElementById("collapseMBway").classList.contains('show') ){
+            document.getElementById("collapseMBway").classList.remove('show');
+          }
+
+          if ( document.getElementById("collapseCard").classList.contains('show') ){
+            document.getElementById("collapseCard").classList.remove('show');
+          }
+          document.getElementById("collapseMBway").classList.add('show');
+
+        }
+
+        function activateCard () {
+          if ( document.getElementById("collapsePaypal").classList.contains('show') ){
+            document.getElementById("collapsePaypal").classList.remove('show');
+          }
+
+          if ( document.getElementById("collapseMBway").classList.contains('show') ){
+            document.getElementById("collapseMBway").classList.remove('show');
+          }
+
+          if ( document.getElementById("collapseCard").classList.contains('show') ){
+            document.getElementById("collapseCard").classList.remove('show');
+          }
+          document.getElementById("collapseCard").classList.add('show');
+
+        }
+      </script>
     </body>
 {% endblock %}
