@@ -200,6 +200,10 @@ def user(username=None):
         if request.method == "POST":
             user = User.query.filter(
                 User.username == username).first()
+            if not user:
+                return {
+                    'verified': False
+                }
             user_found = bcrypt.check_password_hash(
                 user.password, request.form['password'])
             if user_found:

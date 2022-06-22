@@ -250,7 +250,7 @@ def login(username=None, password=None):
         data = request.form
         print(data["password"])
         r = requests.post(url=API_LINK+"user/"+data["username"], data=data)
-        if "verified" in r.json():
+        if "verified" in r.json() and r.json()['verified']:
             query = User.query.filter(
                 User.username == data['username']).first()
             if query:
