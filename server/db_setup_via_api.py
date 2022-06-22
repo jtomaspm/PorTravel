@@ -81,15 +81,9 @@ def create_estates(amount):
     owner_username = ['john', 'ed', 'psi', 'kyle', 'tim']
     citys = ['Porto, ', ' Lisboa ', ' Guarda', ' Aveiro', ' Coimbra']
     countrys = ['Portugal', 'Portugal', 'Portugal', 'Portugal', 'Portugal']
-<<<<<<< HEAD
-    price = ['450', '400', '419.55', '479.55', '600']
-    persons = ['1', '1', '1', '1', '2']
-    photos = ['1', '1', '2', '2', '1']
-=======
     price = ['49.55', '43.55', '419.55', '479.55', '42.55']
     persons = ['1', '1', '2', '2', '1']
     photos = ['6', '7', '8', '9', '10']
->>>>>>> 6b5c2cc7a2397e455d18f152403ea38caaab9214
     description = ['Melhor Hotel no Porto', 'Venha para uma noite relaxada', 'Uma hótima estadia para casais',
                    ' Venha desfrutar com a sua parceira na melhor noite oferecida pelo Dafcan', 'Irdalis, onde garantimos a sua satisfacão']
 

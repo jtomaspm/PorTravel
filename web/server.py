@@ -250,7 +250,7 @@ def login(username=None, password=None):
         data = request.form
         print(data["password"])
         r = requests.post(url=API_LINK+"user/"+data["username"], data=data)
-        if r.json()["verified"]:
+        if "verified" in r.json():
             query = User.query.filter(
                 User.username == data['username']).first()
             if query:
@@ -300,10 +300,11 @@ def profile():
 def register():
     if request.method == "POST":
         data = request.form
-        r = requests.post(url=API_LINK+"user/", data=data)
-        print(data['password'])
-        return url_for('login')
-    return render_template('register.html', current_user=current_user, API_LINK=API_LINK)
+        r = requests.post(url=API_LINK+"user/", data=data).json()
+        if 'errors' in r:
+            return redirect(url_for('register') + '?errors='+r['errors'][0])
+        return redirect(url_for('login'))
+    return render_template('register.html', current_user=current_user, API_LINK=API_LINK, args=request.args)
 
 
 @login_required
@@ -330,7 +331,7 @@ def addestate():
             data['owner_username'] = current_user.username
             os.remove(fn)
             r = requests.post(url=API_LINK+"estate/", data=data)
-            return url_for('profile')
+            return redirect(url_for('profile'))
     return render_template('addestate.html', current_user=current_user, API_LINK=API_LINK, cart_size=get_cart_size(current_user.username))
 
     # Payment

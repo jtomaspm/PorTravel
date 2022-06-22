@@ -9,60 +9,67 @@
 {% block body %}
   <body class="tm-gray-bg">
 	{% include 'nav_bar.html' %}
+
+	{% if 'errors' in args %}
+	<div style="text-align: center;" class="alert alert-danger" role="alert">
+		{{args['errors']}}
+	</div>
+	{% endif %}
+
 	<div class="form-wrapper">
 		<form method="POST" action="">
 			<!-- Email input -->
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="username">Username</label>
-			  <input type="text" id="username" name="username" class="form-control" />
+			  <input type="text" id="username" name="username" class="form-control" required />
 			</div>
 		  
 			<!-- Password input -->
 			<div class="form-outline  col-lg-6">
 				<label class="form-label" for="password">Password</label>
-			  <input type="password" id="password" name="password" class="form-control" />
+			  <input type="password" id="password" name="password" class="form-control" required />
 			</div>
 <br>
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="name">Nome Completo</label>
-				<input type="text" id="name" name="name" class="form-control" />
+				<input type="text" id="name" name="name" class="form-control" required />
 			</div>
 		
 			<!-- Password input -->
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="email">Email</label>
-				<input type="email" id="email" name="email" class="form-control" />
+				<input type="email" id="email" name="email" class="form-control" required />
 			</div>
 <br>
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="address">Morada</label>
-				<input type="text" id="address" name="address" class="form-control" />
+				<input type="text" id="address" name="address" class="form-control" required />
 			</div>
 		
 			<!-- Password input -->
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="birthdate">Data de Nascimento</label>
-				<input type="text" id="bithdate" name="bithdate" class="form-control" placeholder="dd/mm/yyyy"/>
+				<input type="text" id="bithdate" name="bithdate" class="form-control" placeholder="dd/mm/yyyy" required/>
 			</div>
 <br>
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="postalcode">Código Postal</label>
-				<input type="text" id="postal" name="postal" class="form-control" />
+				<input type="text" id="postal" name="postal" class="form-control" required />
 			</div>
 		
 			<!-- Password input -->
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="city">Cidade</label>
-				<input type="text" id="city" name="city" class="form-control" />
+				<input type="text" id="city" name="city" class="form-control"  required/>
 			</div>
 			<br>
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="phone">País</label>
-				<input type="text" id="country" name="country" class="form-control" />
+				<input type="text" id="country" name="country" class="form-control" required />
 			</div><br>
 			<div class="form-outline col-lg-6">
 				<label class="form-label" for="phone">Telemóvel</label>
-				<input type="text" id="phone" name="phone" class="form-control" />
+				<input type="text" id="phone" name="phone" class="form-control" required />
 			</div>
 			<br><br><br><br>
 			<!-- Submit button -->
