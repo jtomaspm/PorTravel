@@ -23,7 +23,7 @@ Link Zenhub - https://app.zenhub.com/workspaces/analise-de-sistemas-629728f341be
 
 ## Logins Existentes:
 	
-    - Username  : john, ed, admin, tim 
+    - Username  : john, ed, admin, kyle, tim 
     - Passwords : 123 para todos
 
 **Made using flask**
